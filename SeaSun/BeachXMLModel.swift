@@ -7,11 +7,10 @@
 //
 
 import Foundation
-import UIKit
 
 struct TwoValueData {
-    var f : Int = 0
-    var decription : String = ""
+    var f : Int?
+    var decription : String?
 }
 
 
@@ -22,52 +21,38 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
     var beachName: String?
     var city: String?
     var prediction: [DayXMLData]?
-    override init() {}
+    var beachCode: String
     
-    // Para rellenar los datos
-    var currentContent: String = ""
+    var currentContent: String?
     
-    struct SwellDescription {
-        static let weak = "Weak"
-        static let moderate = "Moderate"
-        static let strong = "Strong"
-        static let error = "Error"
+    override init() {
+        self.beachCode = "4625001"
     }
     
-    struct WindDescription {
-        static let loose = "Loose"
-        static let moderate = "Moderate"
-        static let strong = "Strong"
-        static let error = "Error"
+    init(with beachCode: String) {
+        self.beachCode = beachCode
     }
     
-    struct TermSensationDescription {
-        static let nHeat = "Nice Heat"
-        static let soft = "Soft"
-        static let vCold = "Very Cold"
-        static let cold = "Cold"
-        static let error = "Error"
-    }
-    
-    static func getStateImage(withCode: Int?) -> UIImage {
+    func parser() {
+        guard let beachURL = URL(string: AemetURL.url + beachCode + AemetURL.type) else {
+            print("URL not defined properly")
+            return
+        }
+        guard let parser = XMLParser(contentsOf: beachURL) else {
+            print("Cannot Read Data")
+            return
+        }
+        parser.delegate = self
+        if !parser.parse(){
+            print("Data Errors Exist:")
+            let error = parser.parserError!
+            print("Error Description:\(error.localizedDescription)")
+            print("Line number: \(parser.lineNumber)")
         
-        let code = withCode ?? -1
-        
-        switch code {
-        case 100:
-            return #imageLiteral(resourceName: "wi_sun")
-        case 110:
-            return #imageLiteral(resourceName: "wi_partly_cloudy")
-        case 120:
-            return #imageLiteral(resourceName: "wi_cloudy")
-        case 130:
-            return #imageLiteral(resourceName: "wi_partly_cloudy_rain")
-        case 140:
-            return #imageLiteral(resourceName: "wi_rain")
-        default:
-            return #imageLiteral(resourceName: "error")
         }
         
+        // Para rellenar los datos
+        currentContent = ""
     }
     
     // Funcion que se hace al principio de cada elemento xml
@@ -105,7 +90,7 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
         currentContent = ""
     }
     
-    private func fillTwoValueData(with dictionary: [String : String]) -> [TwoValueData] {
+    func fillTwoValueData(with dictionary: [String : String]) -> [TwoValueData] {
         var data = TwoValueData()
         var arrayData = [TwoValueData]()
         data.f = Int(dictionary[DayXMLProperties.f1]!)!
@@ -120,7 +105,7 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
     
     // Lo que hay dentro de la etiqueta XML
     func parser(_ parser: XMLParser, foundCharacters string: String) {
-        currentContent += string
+        currentContent! += string
     }
     
     // Llega al final de la etiqueta XML
@@ -148,66 +133,13 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
             self.city = currentContent
         case BeachXMLTags.day:
             prediction?.append(dayData!)
-        case BeachXMLTags.prediction:
-            self.prediction = prediction
+        // case BeachXMLTags.prediction:
+        //    self.prediction = prediction
         default:
             print("other tag not saved")
         }
     }
 
-    
-    static func getWindString(withCode: Int?) -> String {
-        
-        let code = withCode ?? -1
-        
-        switch code {
-        case 210:
-            return WindDescription.loose
-        case 220:
-            return WindDescription.moderate
-        case 330:
-            return WindDescription.strong
-        default:
-            return WindDescription.error
-        }
-        
-    }
-    
-    static func getSwellString(withCode: Int?) -> String {
-        
-        let code = withCode ?? -1
-        
-        switch code {
-        case 310:
-            return SwellDescription.weak
-        case 320:
-            return SwellDescription.moderate
-        case 330:
-            return SwellDescription.strong
-        default:
-            return SwellDescription.error
-        }
-        
-    }
-
-    static func getTermSensationString(withCode: Int?) -> String {
-        
-        let code = withCode ?? -1
-        
-        switch code {
-        case 410:
-            return TermSensationDescription.nHeat
-        case 420:
-            return TermSensationDescription.soft
-        case 430:
-            return TermSensationDescription.vCold
-        case 440:
-            return TermSensationDescription.cold
-        default:
-            return TermSensationDescription.error
-        }
-        
-    }
 }
 
 class Origin: NSObject {
@@ -229,6 +161,84 @@ class DayXMLData: NSObject {
     var waterTemp: Int?
     var maxUV: Int?
     override init() {}
+}
+    
+    
+    
+struct SwellDescription {
+    static let weak = "Weak"
+    static let moderate = "Moderate"
+    static let strong = "Strong"
+    static let error = "Error"
+}
+
+struct WindDescription {
+    static let loose = "Loose"
+    static let moderate = "Moderate"
+    static let strong = "Strong"
+    static let error = "Error"
+}
+
+struct TermSensationDescription {
+    static let nHeat = "Nice Heat"
+    static let soft = "Soft"
+    static let vCold = "Very Cold"
+    static let cold = "Cold"
+    static let error = "Error"
+}
+
+    
+func getWindString(withCode: Int?) -> String {
+    
+    let code = withCode ?? -1
+    
+    switch code {
+    case 210:
+        return WindDescription.loose
+    case 220:
+        return WindDescription.moderate
+    case 330:
+        return WindDescription.strong
+    default:
+        return WindDescription.error
+    }
+    
+}
+
+func getSwellString(withCode: Int?) -> String {
+    
+    let code = withCode ?? -1
+    
+    switch code {
+    case 310:
+        return SwellDescription.weak
+    case 320:
+        return SwellDescription.moderate
+    case 330:
+        return SwellDescription.strong
+    default:
+        return SwellDescription.error
+    }
+    
+}
+
+func getTermSensationString(withCode: Int?) -> String {
+    
+    let code = withCode ?? -1
+    
+    switch code {
+    case 410:
+        return TermSensationDescription.nHeat
+    case 420:
+        return TermSensationDescription.soft
+    case 430:
+        return TermSensationDescription.vCold
+    case 440:
+        return TermSensationDescription.cold
+    default:
+        return TermSensationDescription.error
+    }
+    
 }
 
 struct BeachXMLTags {

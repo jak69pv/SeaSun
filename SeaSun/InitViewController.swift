@@ -14,13 +14,6 @@ class InitViewController: UIViewController, XMLParserDelegate {
     // Datos XML de la playa
     var beachXML: BeachXMLModel?
     
-    // Datos de ese dia
-    var dayData: DayXMLData?
-    // Datos de los dos dias
-    var prediction: [DayXMLData]?
-    // Datos de origen 
-    var origin: Origin?
-    
     // Contenido de la linea actual del XMLParser
     var currentContent = String()
     
@@ -92,125 +85,45 @@ class InitViewController: UIViewController, XMLParserDelegate {
     }
     
     private func setNearestBeachUIData() {
-        self.stateImage.image = BeachXMLModel.getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
+        self.stateImage.image = getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         self.nameBeachLabel?.text = (nearestBeach?.name) ?? "Error"
         self.cityBeachLabel?.text = (nearestBeach?.city) ?? "Error"
         self.tempLabel?.text =  String(describing: (beachXML?.prediction?[0].maxTemp)!)+"º"
         self.windSpeedLabel?.text = "Wind: " +
-            BeachXMLModel.getWindString(withCode: beachXML?.prediction?[0].wind?[0].f)
-        self.swellLabel?.text = "Swell: " + BeachXMLModel.getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
+            getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
+        self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
         self.waterTempLabel?.text = "Water temperature: " + (beachXML?.prediction![0].waterTemp!.description)!
         self.UVLabel?.text = "Max UV: " + String(describing: (beachXML?.prediction?[0].maxUV)!)
     }
-
     
+    func getStateImage(withCode: Int?) -> UIImage {
+        
+        let code = withCode ?? -1
+        
+        switch code {
+        case 100:
+            return #imageLiteral(resourceName: "wi_sun")
+        case 110:
+            return #imageLiteral(resourceName: "wi_partly_cloudy")
+        case 120:
+            return #imageLiteral(resourceName: "wi_cloudy")
+        case 130:
+            return #imageLiteral(resourceName: "wi_partly_cloudy_rain")
+        case 140:
+            return #imageLiteral(resourceName: "wi_rain")
+        default:
+            return #imageLiteral(resourceName: "error")
+        }
+        
+    }
+
     private func getAemetXML(beachCode: String) {
         // URL Tipo
         // http://www.aemet.es/xml/playas/play_v2_3003605.xml
         print(AemetURL.url + beachCode + AemetURL.type)
-        guard let beachURL = URL(string: AemetURL.url + beachCode + AemetURL.type) else {
-            print("URL not defined properly")
-            return
-        }
-        guard let parser = XMLParser(contentsOf: beachURL) else {
-            print("Cannot Read Data")
-            return
-        }
-        parser.delegate = self
-        if !parser.parse(){
-            print("Data Errors Exist:")
-            let error = parser.parserError!
-            print("Error Description:\(error.localizedDescription)")
-            print("Line number: \(parser.lineNumber)")
-        }
-    }
-    
-    // Funcion que se hace al principio de cada elemento xml
-    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
-        switch elementName {
-            
-        // Beach Elements
-        case BeachXMLTags.beach:
-            beachXML = BeachXMLModel()
-        case BeachXMLTags.origin:
-            origin = Origin()
-        case BeachXMLTags.prediction:
-            prediction = [DayXMLData]()
-        case BeachXMLTags.day:
-            dayData = DayXMLData()
-            dayData?.date = attributeDict[DayXMLProperties.date]!
-            
-        // Days elements
-        case DayXMLTags.skyState:
-            dayData?.skyState = fillTwoValueData(with: attributeDict)
-        case DayXMLTags.wind:
-            dayData?.wind = fillTwoValueData(with: attributeDict)
-        case DayXMLTags.swell:
-            dayData?.swell = fillTwoValueData(with: attributeDict)
-        case DayXMLTags.maxTemp:
-            dayData?.maxTemp = Int(attributeDict[DayXMLProperties.value1]!)!
-        case DayXMLTags.tempSensation:
-            dayData?.termSensation?.f = Int(attributeDict[DayXMLProperties.value1]!)!
-            dayData?.termSensation?.decription = attributeDict[DayXMLProperties.desc1]!
-        case DayXMLTags.waterTemp:
-            dayData?.waterTemp = Int(attributeDict[DayXMLProperties.value1]!)!
-        case DayXMLTags.maxUV:
-            dayData?.maxUV = Int(attributeDict[DayXMLProperties.value1]!)!
-        default:
-            print("Other element not saved")
-        }
-        currentContent = ""
-    }
-    
-    private func fillTwoValueData(with dictionary: [String : String]) -> [TwoValueData] {
-        var data = TwoValueData()
-        var arrayData = [TwoValueData]()
-        data.f = Int(dictionary[DayXMLProperties.f1]!)!
-        data.decription = dictionary[DayXMLProperties.desc1]!
-        arrayData.append(data)
-        data.f = Int(dictionary[DayXMLProperties.f2]!)!
-        data.decription = dictionary[DayXMLProperties.desc2]!
-        arrayData.append(data)
-        return arrayData
-    }
-
-        
-    // Lo que hay dentro de la etiqueta XML
-    func parser(_ parser: XMLParser, foundCharacters string: String) {
-        currentContent += string
-    }
-    
-    // Llega al final de la etiqueta XML
-    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-        switch elementName {
-        // Origin elements
-        case OriginXMLTags.productor:
-            origin?.productor = currentContent
-        case OriginXMLTags.web:
-            origin?.web = currentContent
-        case OriginXMLTags.language:
-            origin?.language = currentContent
-        case OriginXMLTags.copyright:
-            origin?.copyrigth = currentContent
-        case OriginXMLTags.legalNote:
-            origin?.legalNote = currentContent
-        // Beach elements
-        case BeachXMLTags.origin:
-            beachXML?.origin = origin!
-        case BeachXMLTags.elaborated:
-            beachXML?.elaborateDate = currentContent
-        case BeachXMLTags.beachName:
-            beachXML?.beachName = currentContent
-        case BeachXMLTags.beachCityCode:
-            beachXML?.city = currentContent
-        case BeachXMLTags.day:
-            prediction?.append(dayData!)
-        case BeachXMLTags.prediction:
-            beachXML?.prediction = prediction
-        default:
-            print("other tag not saved")
-        }
+        beachXML = BeachXMLModel(with: beachCode)
+        beachXML?.parser()
     }
     
     private func initTableView() {
