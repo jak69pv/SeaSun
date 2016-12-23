@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16B2555" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Beach" representedClassName="Beach" syncable="YES">
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fav" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="long" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="webCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="zoneCode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="beachZone" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Zone" inverseName="beaches" inverseEntity="Zone" syncable="YES"/>
+    </entity>
+    <entity name="Zone" representedClassName="Zone" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="province" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pZone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="region" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="beaches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Beach" inverseName="beachZone" inverseEntity="Beach" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Beach" positionX="-83" positionY="-72" width="128" height="165"/>
+        <element name="Zone" positionX="-272" positionY="-28" width="128" height="135"/>
+    </elements>
+</model>
