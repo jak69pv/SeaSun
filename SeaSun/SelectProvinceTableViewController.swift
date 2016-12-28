@@ -9,6 +9,8 @@
 import UIKit
 
 class SelectProvinceTableViewController: UITableViewController {
+    
+    var bigZone: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()

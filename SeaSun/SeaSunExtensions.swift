@@ -8,6 +8,7 @@
 //  Algunas estructuras y extensiones de ayura
 
 import Foundation
+import UIKit
 
 struct Segues {
     static let introToInit = "Intro to init"
@@ -106,5 +107,13 @@ func parseCSV (contentsOfURL: NSURL, encoding: String.Encoding, type: String, er
         }
     }
     return type == Types.zone ? zones : beaches
+}
+
+extension UIColor {
+    
+    //0x7EDDCE
+    public class var seaSunBlue: UIColor {
+        return UIColor(red: CGFloat(0.494), green: CGFloat(0.867), blue: CGFloat(0.808), alpha: CGFloat(1.0)) }
+    
 }
 

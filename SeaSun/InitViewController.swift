@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InitViewController: UIViewController, XMLParserDelegate {
+class InitViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MODEL
     // Datos XML de la playa
@@ -25,6 +25,13 @@ class InitViewController: UIViewController, XMLParserDelegate {
             }
         }
     }
+    
+    // Items dentro de la tabla
+    var itemsRow: [String] = [
+        "North",
+        "South",
+        "East"
+    ]
 
     // Action de botón de favorito
     @IBAction func goToFavourites(_ sender: UIBarButtonItem) {
@@ -77,6 +84,7 @@ class InitViewController: UIViewController, XMLParserDelegate {
         getAemetXML(beachCode: (nearestBeach?.webCode)!)
         setNearestBeachUIData()
         initTableView()
+        initSearchBar()
     }
 
     override func didReceiveMemoryWarning() {
@@ -126,9 +134,55 @@ class InitViewController: UIViewController, XMLParserDelegate {
         beachXML?.parser()
     }
     
-    private func initTableView() {
-    
+    private func initSearchBar() {
+        self.searchBeachBar.placeholder = "Search beach..."
     }
+    
+    func initTableView() {
+        self.beachBigZoneTableView.delegate = self
+        self.beachBigZoneTableView.dataSource = self
+        self.beachBigZoneTableView.register(UITableViewCell.self, forCellReuseIdentifier: "prototipeCell")
+        // Cambiamos color separador de la tabla y hacemos que llegue de lado a lado
+        self.beachBigZoneTableView.separatorColor = UIColor.black
+        self.beachBigZoneTableView.separatorInset.left = 0
+        self.beachBigZoneTableView.separatorInset.right = 0
+        // Mostrar solo las celdas que se ven
+        let footerView = UIView()
+        footerView.backgroundColor = UIColor.seaSunBlue
+        self.beachBigZoneTableView.tableFooterView = footerView
+        
+        // self.BottomStackView.addSubview(beachBigZoneTableView)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.itemsRow.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = self.beachBigZoneTableView.dequeueReusableCell(withIdentifier: "prototipeCell")!
+                                            as UITableViewCell
+        cell.textLabel?.text = self.itemsRow[indexPath.row]
+        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 22.0)
+        // Indicador del final
+        cell.accessoryType = UITableViewCellAccessoryType.none
+        cell.accessoryView = UIImageView(image: #imageLiteral(resourceName: "disclosureBlack"))
+        // Color de la celda
+        cell.backgroundColor = UIColor.seaSunBlue
+        // Estilo de seleccion
+        cell.selectionStyle = UITableViewCellSelectionStyle.blue
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Presentamos el Main.storyboard
+        let storyboard = self.storyboard
+        // Inicializamos el view cotroller de este storyboard y pasamos las variables
+        let nextView: SelectProvinceTableViewController = storyboard?.instantiateViewController(withIdentifier: "SelectProvinceTableViewController") as! SelectProvinceTableViewController
+        nextView.bigZone = self.itemsRow[indexPath.row]
+        // Inicializamos el view controller y le pasamos el VC
+        self.navigationController?.pushViewController(nextView, animated: true)
+    }
+
     
 
     /*

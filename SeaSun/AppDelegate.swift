@@ -27,7 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             preloadData(ofType: ResourcesNames.zone)
             defaults.set(true, forKey: "isPreloaded")
         }
-        //
         // Override point for customization after application launch.
         return true
     }
