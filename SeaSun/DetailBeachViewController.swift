@@ -9,10 +9,14 @@
 import UIKit
 
 class DetailBeachViewController: UIViewController {
+    
+    var beach: Beach?
+    
+    @IBOutlet weak var beachNameLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        beachNameLabel?.text = beach?.name
         // Do any additional setup after loading the view.
     }
 

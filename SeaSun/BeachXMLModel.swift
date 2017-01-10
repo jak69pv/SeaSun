@@ -85,7 +85,7 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
         case DayXMLTags.maxUV:
             dayData?.maxUV = Int(attributeDict[DayXMLProperties.value1]!)!
         default:
-            print("Other element not saved")
+            break
         }
         currentContent = ""
     }
@@ -136,7 +136,7 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
         // case BeachXMLTags.prediction:
         //    self.prediction = prediction
         default:
-            print("other tag not saved")
+            break
         }
     }
 

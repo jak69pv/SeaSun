@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import CoreData
 
 class InitViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MODEL
     // Datos XML de la playa
     var beachXML: BeachXMLModel?
+    
+    // Variable para CoreData
+    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
     // Contenido de la linea actual del XMLParser
     var currentContent = String()
@@ -86,6 +90,15 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         initTableView()
         initSearchBar()
     }
+    
+    // Cuando la vista va a desaparecer
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Deseleccionamos la celda que este seleccionada
+        if let indexPath = self.beachBigZoneTableView.indexPathForSelectedRow {
+            self.beachBigZoneTableView.deselectRow(at: indexPath, animated: true)
+        }
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -146,12 +159,10 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.beachBigZoneTableView.separatorColor = UIColor.black
         self.beachBigZoneTableView.separatorInset.left = 0
         self.beachBigZoneTableView.separatorInset.right = 0
+        self.beachBigZoneTableView.backgroundColor = UIColor.seaSunBlue
         // Mostrar solo las celdas que se ven
         let footerView = UIView()
-        footerView.backgroundColor = UIColor.seaSunBlue
         self.beachBigZoneTableView.tableFooterView = footerView
-        
-        // self.BottomStackView.addSubview(beachBigZoneTableView)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -176,12 +187,34 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Presentamos el Main.storyboard
         let storyboard = self.storyboard
+        let bigZone = self.itemsRow[indexPath.row]
+        let zones =  self.getZones(bigZone)
         // Inicializamos el view cotroller de este storyboard y pasamos las variables
-        let nextView: SelectProvinceTableViewController = storyboard?.instantiateViewController(withIdentifier: "SelectProvinceTableViewController") as! SelectProvinceTableViewController
-        nextView.bigZone = self.itemsRow[indexPath.row]
-        // Inicializamos el view controller y le pasamos el VC
+        let nextView: SelectProvinceZoneTableViewController = storyboard?.instantiateViewController(withIdentifier: "SelectProvinceTableViewController") as! SelectProvinceZoneTableViewController
+        nextView.bigZone = bigZone
+        nextView.zones = zones        // Inicializamos el view controller y le pasamos el VC
         self.navigationController?.pushViewController(nextView, animated: true)
     }
+    
+    private func getZones(_ bigZone: String) -> ([Zone]?/*, [String]?, [[String]]?*/) {
+        var zones: [Zone]?
+        //var zonesToArray: ([String]?, [[String]]?)
+        managedObjectContext?.performAndWait {
+            let fetchRequest = NSFetchRequest<Zone>(entityName: "Zone")
+            fetchRequest.predicate = NSPredicate(format: "region == %@", bigZone)
+            do {
+                zones = try self.managedObjectContext?.fetch(fetchRequest)
+                //zonesToArray = self.zonesToArray(inZones: zones)
+                print(zones?.count ?? -1)
+                
+            } catch let error{
+                print("Error retrieve beaches: \(error)")
+            }
+        }
+        return zones/*, zonesToArray.0, zonesToArray.1)*/
+    }
+    
+
 
     
 

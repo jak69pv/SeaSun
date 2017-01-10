@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SelectZoneViewController: UIViewController {
+class SelectBeachViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

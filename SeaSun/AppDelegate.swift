@@ -23,8 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Para actualizar DB mientras vamos metiendo playas
         // defaults.set(false, forKey: "isPreloaded")
         if !isPreloaded {
-            preloadData(ofType: ResourcesNames.beach)
             preloadData(ofType: ResourcesNames.zone)
+            preloadData(ofType: ResourcesNames.beach)
             defaults.set(true, forKey: "isPreloaded")
         }
         // Override point for customization after application launch.
@@ -83,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
-
+    
     // MARK: - Core Data Saving support
 
     func saveContext () {
@@ -130,25 +130,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             zoneToSave.province = zone.province
                             zoneToSave.pZone = zone.pZone
                             zoneToSave.code = zone.code
-                            
-                            // Buscamos las playas con el mismo código y las guardamos
-                            let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
-                            fetchRequest.predicate = NSPredicate(format: "zoneCode like %@" ,zoneToSave.code!)
-                            
+                                                    
+                            // Guardamos en la base de datos
                             do {
-                                let searchBeaches = try managedObjectContext?.fetch(fetchRequest)
-                                
-                                print ("num of results = \(searchBeaches?.count) en \(zoneToSave.code)")
-                                
-                                zoneToSave.beaches?.addingObjects(from: searchBeaches!)
-                                
-                                // Guardamos en la base de datos
                                 try managedObjectContext?.save()
-
                             } catch let error {
                                 print ("Could not save \(error), \(error.localizedDescription)")
                             }
-                                                    }
+                            
+                        }
                     }
                 }
             } else if type == ResourcesNames.beach {
@@ -166,9 +156,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             beachToSave.webCode = beach.webCode
                             beachToSave.zoneCode = beach.zoneCode
                             
-                            // Guardamos en la base de datos
+                            let fetchRequest = NSFetchRequest<Zone>(entityName: "Zone")
+                            fetchRequest.predicate = NSPredicate(format: "code == %@",beachToSave.zoneCode!)
+                            
                             do {
+                                let searchZone = try managedObjectContext?.fetch(fetchRequest)
+                                
+                                print ("num of results = \(searchZone?.count) en \(beachToSave.zoneCode)")
+                                searchZone![0].addToBeaches(beachToSave)
+                                
+                                // Guardamos en la base de datos
                                 try managedObjectContext?.save()
+                                
                             } catch let error {
                                 print ("Could not save \(error), \(error.localizedDescription)")
                             }

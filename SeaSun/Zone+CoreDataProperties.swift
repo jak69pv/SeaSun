@@ -39,5 +39,5 @@ extension Zone {
 
     @objc(removeBeaches:)
     @NSManaged public func removeFromBeaches(_ values: NSSet)
-
+    
 }
