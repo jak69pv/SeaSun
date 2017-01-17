@@ -13,6 +13,7 @@ import UIKit
 struct Segues {
     static let introToInit = "Intro to init"
     static let initToFav = "Init to Favourites"
+    static let initToDetail = "Init to detail"
     static let favToDetail = "Favourite to detail"
     static let detailToMap = "Detail to map"
     static let initToRegion = "Init to region"

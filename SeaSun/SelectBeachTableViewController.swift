@@ -28,7 +28,7 @@ class SelectBeachTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = (pZone?.province)! + " " + (pZone?.pZone)!
-        zonesToArray()
+        beachesToArray()
         prepareTableView()
 
         // Uncomment the following line to preserve selection between presentations
@@ -92,14 +92,12 @@ class SelectBeachTableViewController: UITableViewController {
         // Mostrar solo las celdas que se ven
         let footerView = UIView()
         self.beachesTableView.tableFooterView = footerView
-        
     }
     
     // En esta funcion rellenamos los arrays de String con las secciones,
     // filas y ademas especificamos que indice tiene cada elemento segun
     // donde este
-    private func zonesToArray(){
-        print("En seleccion e playas")
+    private func beachesToArray(){
         var currentCity: String?
         var rowsInSection: [String]? = []
         var count = 0
@@ -110,14 +108,20 @@ class SelectBeachTableViewController: UITableViewController {
                     rowsInSection?.append(beach.name!)
                     indexInSection?.append(count)
                 } else {
-                    self.sections?.append(currentCity!)
-                    currentCity = beach.city!
-                    self.rows?.append(rowsInSection!)
-                    rowsInSection?.removeAll()
-                    rowsInSection?.append(beach.name!)
-                    self.rowsIndex?.append(indexInSection!)
-                    indexInSection?.removeAll()
-                    indexInSection?.append(count)
+                    if let index = self.sections?.index(of: beach.city!) {
+                        self.rows?[index].append(beach.name!)
+                        self.rowsIndex?[index].append(count)
+                    } else {
+                        self.sections?.append(currentCity!)
+                        currentCity = beach.city!
+                        self.rows?.append(rowsInSection!)
+                        rowsInSection?.removeAll()
+                        rowsInSection?.append(beach.name!)
+                        self.rowsIndex?.append(indexInSection!)
+                        indexInSection?.removeAll()
+                        indexInSection?.append(count)
+
+                    }
                 }
             } else {
                 currentCity = beach.city!
@@ -130,6 +134,4 @@ class SelectBeachTableViewController: UITableViewController {
         self.rows?.append(rowsInSection!)
         self.rowsIndex?.append(indexInSection!)
     }
-
-
 }

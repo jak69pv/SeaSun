@@ -16,7 +16,8 @@ class DetailBeachViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        beachNameLabel?.text = beach?.name
+        print(beach!.name!)
+        beachNameLabel?.text = beach!.name!
         // Do any additional setup after loading the view.
     }
 

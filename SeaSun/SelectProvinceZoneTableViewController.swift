@@ -83,7 +83,6 @@ class SelectProvinceZoneTableViewController: UITableViewController {
         // Inicializamos el view cotroller de este storyboard y pasamos las variables
         let nextView: SelectBeachTableViewController = storyboard?.instantiateViewController(withIdentifier: "SelectBeachTableViewController") as! SelectBeachTableViewController
         nextView.pZone = pZone
-        print(pZone?.beaches?.allObjects.count)
         nextView.beaches = pZone?.beaches?.allObjects as! [Beach]?
         // Inicializamos el view controller y le pasamos el VC
         self.navigationController?.pushViewController(nextView, animated: true)
@@ -104,44 +103,37 @@ class SelectProvinceZoneTableViewController: UITableViewController {
         
     }
     
-    /* private func getBeaches(_ pZone: Zone?) -> [Beach]? {
-        var beaches: [Beach]? // = pZone?.beaches?.allObjects as? [Beach]
-        print("hola")
-        print("\((pZone?.code)!)")
-        managedObjectContext?.performAndWait {
-            let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
-            fetchRequest.predicate = NSPredicate(format: "zoneCode == %@", (pZone?.code)!)
-            do {
-                beaches = try self.managedObjectContext?.fetch(fetchRequest)                
-            } catch let error{
-                print("Error retrieve beaches: \(error)")
-            }
-        }
-        return beaches
-    } */
-    
     // En esta funcion rellenamos los arrays de String con las secciones,
     // filas y ademas especificamos que indice tiene cada elemento segun
     // donde este
     private func zonesToArray(){
         var currentProvince: String?
         var rowsInSection: [String]? = []
+        // Variable para indexar las filas aunque esten desordenadas
         var count = 0
         var indexInSection: [Int]? = []
         for zone in self.zones! {
+            // Si es la primera vuelta
             if currentProvince != nil {
+                // Si seguimos en la misma seccion
                 if zone.province == currentProvince! {
                     rowsInSection?.append(zone.pZone!)
                     indexInSection?.append(count)
                 } else {
-                    self.sections?.append(currentProvince!)
-                    currentProvince = zone.province!
-                    self.rows?.append(rowsInSection!)
-                    rowsInSection?.removeAll()
-                    rowsInSection?.append(zone.pZone!)
-                    self.rowsIndex?.append(indexInSection!)
-                    indexInSection?.removeAll()
-                    indexInSection?.append(count)
+                    // Si era de una seccion que ya existia
+                    if let index = self.sections?.index(of: zone.province!) {
+                        self.rows?[index].append(zone.pZone!)                        
+                        self.rowsIndex?[index].append(count)
+                    } else {
+                        self.sections?.append(currentProvince!)
+                        currentProvince = zone.province!
+                        self.rows?.append(rowsInSection!)
+                        rowsInSection?.removeAll()
+                        rowsInSection?.append(zone.pZone!)
+                        self.rowsIndex?.append(indexInSection!)
+                        indexInSection?.removeAll()
+                        indexInSection?.append(count)
+                    }
                 }
             } else {
                 currentProvince = zone.province!

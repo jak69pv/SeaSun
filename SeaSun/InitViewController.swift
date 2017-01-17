@@ -42,6 +42,10 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         performSegue(withIdentifier: Segues.initToFav, sender: sender)
     }
     
+    @IBAction func tapNearestBeach(_ sender: UITapGestureRecognizer) {
+        performSegue(withIdentifier: Segues.initToDetail, sender: sender)
+    }
+    
     // Outlet de boton de favoritos
     @IBOutlet weak var favouritesButton: UINavigationItem!
     
@@ -218,14 +222,20 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        switch segue.identifier {
+        case Segues.initToFav?:
+            break // TODO (or not)
+        case Segues.initToDetail?:
+            if let ivc = segue.destination as? DetailBeachViewController {
+             ivc.beach = nearestBeach
+            }
+        default:
+            break
+        }
     }
-    */
-
 }

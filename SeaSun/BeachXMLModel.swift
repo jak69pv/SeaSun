@@ -197,7 +197,7 @@ func getWindString(withCode: Int?) -> String {
         return WindDescription.loose
     case 220:
         return WindDescription.moderate
-    case 330:
+    case 230:
         return WindDescription.strong
     default:
         return WindDescription.error
@@ -228,13 +228,13 @@ func getTermSensationString(withCode: Int?) -> String {
     
     switch code {
     case 410:
-        return TermSensationDescription.nHeat
-    case 420:
         return TermSensationDescription.soft
+    case 420:
+        return TermSensationDescription.cold
     case 430:
         return TermSensationDescription.vCold
     case 440:
-        return TermSensationDescription.cold
+        return TermSensationDescription.nHeat
     default:
         return TermSensationDescription.error
     }

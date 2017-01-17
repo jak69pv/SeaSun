@@ -194,6 +194,7 @@
                                                     </imageView>
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.49448515180000002" green="0.86666666670000003" blue="0.80811004799999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <gestureRecognizers/>
                                                 <constraints>
                                                     <constraint firstItem="QNV-c0-tYs" firstAttribute="centerX" secondItem="Tf3-RD-Lff" secondAttribute="centerX" id="1Ja-Or-qQs"/>
                                                     <constraint firstItem="p6q-U2-mTp" firstAttribute="top" secondItem="TAh-ve-gMU" secondAttribute="bottom" constant="4" id="8rX-fI-lCC"/>
@@ -214,6 +215,9 @@
                                                     <constraint firstItem="TAh-ve-gMU" firstAttribute="top" secondItem="Tf3-RD-Lff" secondAttribute="top" constant="41" id="rcc-eb-AAy"/>
                                                     <constraint firstItem="TAh-ve-gMU" firstAttribute="leading" secondItem="p6q-U2-mTp" secondAttribute="leading" id="u6K-Et-Uhf"/>
                                                 </constraints>
+                                                <connections>
+                                                    <outletCollection property="gestureRecognizers" destination="PCt-82-ixm" appends="YES" id="rTa-TV-vjU"/>
+                                                </connections>
                                             </view>
                                         </subviews>
                                         <constraints>
@@ -321,6 +325,12 @@
                         <outlet property="searchResultsDelegate" destination="dIv-rw-0f8" id="3Qj-CG-40o"/>
                     </connections>
                 </searchDisplayController>
+                <tapGestureRecognizer id="PCt-82-ixm">
+                    <connections>
+                        <action selector="tapNearestBeach:" destination="dIv-rw-0f8" id="qaD-Ph-ePF"/>
+                        <segue destination="vMa-FS-q7T" kind="show" identifier="Init to detail" id="HNN-11-oMt"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1997.5999999999999" y="120.98950524737631"/>
         </scene>
@@ -350,6 +360,9 @@
                             <outlet property="delegate" destination="IcG-Sq-yel" id="56V-SX-tBc"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="favouritesTableView" destination="klK-VH-ozl" id="m4t-AQ-P3r"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XOf-mC-0Ow" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -367,8 +380,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="llA-8e-7Pw">
-                                <rect key="frame" x="166" y="20" width="42" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="llA-8e-7Pw">
+                                <rect key="frame" x="143" y="72" width="88" height="105"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="88" id="4j9-xR-2ky"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -376,8 +392,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="llA-8e-7Pw" firstAttribute="top" secondItem="avV-1F-k2F" secondAttribute="top" constant="20" symbolic="YES" id="FuW-tO-TFX"/>
-                            <constraint firstItem="llA-8e-7Pw" firstAttribute="centerX" secondItem="avV-1F-k2F" secondAttribute="centerX" id="xB7-DC-Y4i"/>
+                            <constraint firstItem="llA-8e-7Pw" firstAttribute="centerX" secondItem="avV-1F-k2F" secondAttribute="centerX" id="5Ud-PK-xOn"/>
+                            <constraint firstItem="llA-8e-7Pw" firstAttribute="top" secondItem="avV-1F-k2F" secondAttribute="top" constant="72" id="hhB-c8-rek"/>
+                            <constraint firstItem="FNE-st-3I7" firstAttribute="top" secondItem="llA-8e-7Pw" secondAttribute="bottom" constant="490" id="ueE-96-y9J"/>
                         </constraints>
                     </view>
                     <connections>
@@ -386,7 +403,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M8P-gk-N7Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3762" y="121"/>
+            <point key="canvasLocation" x="3760.8000000000002" y="120.98950524737631"/>
         </scene>
         <!--Map Road To View Controller-->
         <scene sceneID="QwF-13-dQK">
@@ -422,7 +439,7 @@
             <objects>
                 <navigationController storyboardIdentifier="Navigatio" automaticallyAdjustsScrollViewInsets="NO" id="ti7-xo-BRr" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Wsp-sm-JDp">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Wsp-sm-JDp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -498,4 +515,7 @@
             <point key="canvasLocation" x="2961" y="877"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="HNN-11-oMt"/>
+    </inferredMetricsTieBreakers>
 </document>
