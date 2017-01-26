@@ -45,8 +45,8 @@ class DetailBeachViewController: UIViewController {
         
     }
     
-    private func setBeachUIData() {
-        if let prediction = beachXML?.prediction?[0] {
+    private func setBeachUIData(forToday today: Bool) {
+       /* if let prediction = beachXML?.prediction?[0] {
             self.temperatureLabel?.text =  String(describing: (prediction.maxTemp)!)+"º"
             self.waterTempLabel?.text = "Water temperature: " + prediction.waterTemp!.description
             self.UVLabel?.text = "Max UV: " + String(describing: prediction.maxUV!)
@@ -61,7 +61,7 @@ class DetailBeachViewController: UIViewController {
         self.cityBeachLabel?.text = (nearestBeach?.city) ?? "Error"
         self.windSpeedLabel?.text = "Wind: " +
             getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
-        self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
+        self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)*/
     }
     
     private func resizeImage(_ image: UIImage, width: Float, height: Float) -> UIImage {
