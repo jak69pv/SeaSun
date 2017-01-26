@@ -33,14 +33,13 @@ class FavouriteBeachesTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getFavouriteBeaches()
         // Si existen playas favoritas
-        if favouriteBeaches != nil {
-            getFavouriteBeaches()
+        if favouriteBeaches != nil && !((favouriteBeaches?.isEmpty)!) {
             favBeachesToArray()
         }
         prepareTableView()
         self.navigationItem.title = self.favTableViewTitle
-
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -91,13 +90,31 @@ class FavouriteBeachesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        // Quitamos la playa de favoritos primero
-        let beachIndex = self.rowsIndex?[indexPath.section][indexPath.row]
-        deleteFavBeachFromCoreData(to: favouriteBeaches?[beachIndex!])
-        // Reiniciamos los arrays
-        favBeachesToArray()
-        // Reiniciamos la tabla
-        self.favouritesTableView.reloadData()
+        if editingStyle == UITableViewCellEditingStyle.delete {
+            // Quitamos la playa de favoritos primero
+            let beachIndex = self.rowsIndex?[indexPath.section][indexPath.row]
+            // Borramos la playa del CoreData
+            deleteFavBeachFromCoreData(to: favouriteBeaches?[beachIndex!])
+            favouritesTableView?.beginUpdates()
+            
+            var indexSet = IndexSet()
+            indexSet.insert(indexPath.section)
+
+            // La borramos del array
+            removeBeachToArray(at: indexPath)
+            // BOrramos la fila de la tabla            
+            self.favouritesTableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            print("Datos borrados de la tabla")
+            
+            // Reiniciamos los datos de la tabla
+            // favouritesTableView?.reloadData()
+            //self.favouritesTableView?.reloadSections(indexSet, with: .none)
+            self.favouritesTableView!.reloadData()
+            print("Number of sections: " + String(favouritesTableView.numberOfSections))
+            
+            favouritesTableView?.endUpdates()
+        }
+
     }
 
     
@@ -188,6 +205,22 @@ class FavouriteBeachesTableViewController: UITableViewController {
         self.sections?.append(currentCity! + " - " + province!)
         self.rows?.append(rowsInSection!)
         self.rowsIndex?.append(indexInSection!)
+    }
+    
+    private func removeBeachToArray(at indexPath: IndexPath) {
+        // Borramos la entrada en las matrices correspondientes
+        rows?[indexPath.section].remove(at: indexPath.row)
+        rowsIndex?[indexPath.section].remove(at: indexPath.row)
+        print("Number of sections: " + String(favouritesTableView.numberOfSections))
+        if (rows?[indexPath.section].isEmpty)! {
+            print("joer")
+            rows?.remove(at: indexPath.section)
+            print("Borradas las filas: Count = " + String(describing: rows?.count))
+            rowsIndex?.remove(at: indexPath.section)
+            print("Borrados los indices: COUNT = " + String(describing: rowsIndex?.count))
+            sections?.remove(at: indexPath.section)
+            print("Borrada la seccion: Count = " + String(describing: sections?.count))
+        }
     }
 
     

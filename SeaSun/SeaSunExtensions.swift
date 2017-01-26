@@ -22,6 +22,11 @@ struct Segues {
     static let zoneToDetail = "Zone to detail"
 }
 
+struct labelsText {
+    static let today = "Today"
+    static let tomorrow = "Tomorrow"
+}
+
 private struct Types{
     static let zone = "Zone"
     static let beach = "Beach"
@@ -116,5 +121,98 @@ extension UIColor {
     public class var seaSunBlue: UIColor {
         return UIColor(red: CGFloat(0.494), green: CGFloat(0.867), blue: CGFloat(0.808), alpha: CGFloat(1.0)) }
     
+}
+
+public func getDayImage(forToday today: Bool) -> UIImage {
+    
+    let calendar = Calendar.autoupdatingCurrent
+    let components = calendar.dateComponents([.day, .month, .year], from: Date())
+    
+    switch components.day! {
+    case 1:
+        return today ? #imageLiteral(resourceName: "cal_day_1") : #imageLiteral(resourceName: "cal_day_2")
+    case 2:
+        return today ? #imageLiteral(resourceName: "cal_day_2") : #imageLiteral(resourceName: "cal_day_3")
+    case 3:
+        return today ? #imageLiteral(resourceName: "cal_day_3") : #imageLiteral(resourceName: "cal_day_4")
+    case 4:
+        return today ? #imageLiteral(resourceName: "cal_day_4") : #imageLiteral(resourceName: "cal_day_5")
+    case 5:
+        return today ? #imageLiteral(resourceName: "cal_day_5") : #imageLiteral(resourceName: "cal_day_6")
+    case 6:
+        return today ? #imageLiteral(resourceName: "cal_day_6") : #imageLiteral(resourceName: "cal_day_7")
+    case 7:
+        return today ? #imageLiteral(resourceName: "cal_day_7") : #imageLiteral(resourceName: "cal_day_8")
+    case 8:
+        return today ? #imageLiteral(resourceName: "cal_day_8") : #imageLiteral(resourceName: "cal_day_9")
+    case 9:
+        return today ? #imageLiteral(resourceName: "cal_day_9") : #imageLiteral(resourceName: "cal_day_10")
+    case 10:
+        return today ? #imageLiteral(resourceName: "cal_day_10") : #imageLiteral(resourceName: "cal_day_11")
+    case 11:
+        return today ? #imageLiteral(resourceName: "cal_day_11") : #imageLiteral(resourceName: "cal_day_12")
+    case 12:
+        return today ? #imageLiteral(resourceName: "cal_day_12") : #imageLiteral(resourceName: "cal_day_13")
+    case 13:
+        return today ? #imageLiteral(resourceName: "cal_day_13") : #imageLiteral(resourceName: "cal_day_14")
+    case 14:
+        return today ? #imageLiteral(resourceName: "cal_day_14") : #imageLiteral(resourceName: "cal_day_15")
+    case 15:
+        return today ? #imageLiteral(resourceName: "cal_day_15") : #imageLiteral(resourceName: "cal_day_16")
+    case 16:
+        return today ? #imageLiteral(resourceName: "cal_day_16") : #imageLiteral(resourceName: "cal_day_17")
+    case 17:
+        return today ? #imageLiteral(resourceName: "cal_day_17") : #imageLiteral(resourceName: "cal_day_18")
+    case 18:
+        return today ? #imageLiteral(resourceName: "cal_day_18") : #imageLiteral(resourceName: "cal_day_19")
+    case 19:
+        return today ? #imageLiteral(resourceName: "cal_day_19") : #imageLiteral(resourceName: "cal_day_20")
+    case 20:
+        return today ? #imageLiteral(resourceName: "cal_day_20") : #imageLiteral(resourceName: "cal_day_21")
+    case 21:
+        return today ? #imageLiteral(resourceName: "cal_day_21") : #imageLiteral(resourceName: "cal_day_22")
+    case 22:
+        return today ? #imageLiteral(resourceName: "cal_day_22") : #imageLiteral(resourceName: "cal_day_23")
+    case 23:
+        return today ? #imageLiteral(resourceName: "cal_day_23") : #imageLiteral(resourceName: "cal_day_24")
+    case 24:
+        return today ? #imageLiteral(resourceName: "cal_day_24") : #imageLiteral(resourceName: "cal_day_25")
+    case 25:
+        return today ? #imageLiteral(resourceName: "cal_day_25") : #imageLiteral(resourceName: "cal_day_26")
+    case 26:
+        return today ? #imageLiteral(resourceName: "cal_day_26") : #imageLiteral(resourceName: "cal_day_27")
+    case 27:
+        return today ? #imageLiteral(resourceName: "cal_day_27") : #imageLiteral(resourceName: "cal_day_28")
+    case 28:
+        if isLeapYear(components.year!) {
+            return today ? #imageLiteral(resourceName: "cal_day_28") : #imageLiteral(resourceName: "cal_day_29")
+        } else {
+            return today ? #imageLiteral(resourceName: "cal_day_28") : #imageLiteral(resourceName: "cal_day_1")
+        }
+    case 29:
+        if components.month! == 2 {
+            return today ? #imageLiteral(resourceName: "cal_day_29") : #imageLiteral(resourceName: "cal_day_1")
+        } else {
+            return today ? #imageLiteral(resourceName: "cal_day_29") : #imageLiteral(resourceName: "cal_day_30")
+        }
+    case 30:
+        if has31Days(components.month!) {
+            return today ? #imageLiteral(resourceName: "cal_day_30") : #imageLiteral(resourceName: "cal_day_31")
+        } else {
+            return today ? #imageLiteral(resourceName: "cal_day_30") : #imageLiteral(resourceName: "cal_day_1")
+        }
+    case 31:
+        return today ? #imageLiteral(resourceName: "cal_day_31") : #imageLiteral(resourceName: "cal_day_1")
+    default:
+        return #imageLiteral(resourceName: "error")
+    }
+}
+
+public func isLeapYear(_ year: Int) -> Bool {
+    return ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0))
+}
+
+public func has31Days(_ month: Int) -> Bool {
+    return month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12
 }
 

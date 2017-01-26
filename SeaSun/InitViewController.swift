@@ -110,16 +110,22 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func setNearestBeachUIData() {
+        if let prediction = beachXML?.prediction?[0] {
+            self.tempLabel?.text =  String(describing: (prediction.maxTemp)!)+"º"
+            self.waterTempLabel?.text = "Water temperature: " + prediction.waterTemp!.description
+            self.UVLabel?.text = "Max UV: " + String(describing: prediction.maxUV!)
+        } else {
+            self.tempLabel?.text =  "--º"
+            self.waterTempLabel?.text = "Water temperature: Error"
+            self.UVLabel?.text = "Max UV: Error"
+        }
         self.stateImage.image = getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         self.nameBeachLabel?.text = (nearestBeach?.name) ?? "Error"
         self.cityBeachLabel?.text = (nearestBeach?.city) ?? "Error"
-        self.tempLabel?.text =  String(describing: (beachXML?.prediction?[0].maxTemp)!)+"º"
         self.windSpeedLabel?.text = "Wind: " +
             getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
         self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
-        self.waterTempLabel?.text = "Water temperature: " + (beachXML?.prediction![0].waterTemp!.description)!
-        self.UVLabel?.text = "Max UV: " + String(describing: (beachXML?.prediction?[0].maxUV)!)
     }
     
     func getStateImage(withCode: Int?) -> UIImage {
@@ -232,7 +238,8 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
             break // TODO (or not)
         case Segues.initToDetail?:
             if let ivc = segue.destination as? DetailBeachViewController {
-             ivc.beach = nearestBeach
+                ivc.beach = nearestBeach
+                ivc.beachXML = self.beachXML
             }
         default:
             break
