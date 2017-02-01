@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import MapKit
 
 struct Segues {
     static let introToInit = "Intro to init"
@@ -23,8 +24,23 @@ struct Segues {
 }
 
 struct labelsText {
+    static let appName = "SeaSun"
     static let today = "Today"
     static let tomorrow = "Tomorrow"
+    static let nearestBeach = "Nearest Beach"
+    static let favourites = "Favourites"
+    static let searchBeachPlaceholder = "Search beach"
+    static let error = "Error"
+    static let windTitle = "Wind"
+    static let swellTitle = "Swell"
+    static let uvTitle = "UV"
+    static let waterTempTitle = "Water temperature"
+    static let thermalSensTitle = "Thermal Sensation"
+    static let currentLocation = "Current Location"
+    static let alertTitle = "Delete beach to favourites"
+    static let alertMessage = "Are you sure?"
+    static let alertCancel = "Cancel"
+    static let alertOk = "Delete"
 }
 
 private struct Types{
@@ -36,6 +52,7 @@ struct AemetURL {
     static let url = "http://www.aemet.es/xml/playas/play_v2_"
     static let type = ".xml"
 }
+
 
 
 // Funcion para parsear CSV

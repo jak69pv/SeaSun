@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class DetailBeachViewController: UIViewController {
     
@@ -14,20 +15,58 @@ class DetailBeachViewController: UIViewController {
     
     var beachXML: BeachXMLModel?
     
+    // Variable para CoreData
+    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    
+    // Outlets de todos los componentes
     @IBOutlet weak var beachNameLabel: UILabel!
-
+    @IBOutlet weak var beachImageView: UIView!
+    @IBOutlet weak var favSwitch: UIButton!
+    @IBOutlet weak var mapButton: UIButton!
+    @IBOutlet weak var beachImage: UIImageView!
+    
     @IBOutlet weak var changeDaysTab: UITabBar!
     @IBOutlet weak var todayButton: UITabBarItem!
     @IBOutlet weak var tomorrowButton: UITabBarItem!
+
+    @IBOutlet weak var temperetureLabel: UILabel!
+    @IBOutlet weak var weatherIcon: UIImageView!
     
-    @IBOutlet weak var temperatureLabel: UIStackView!
-    @IBOutlet weak var weatherIcon: UIStackView!
+    @IBOutlet weak var windTitle: UILabel!
+    @IBOutlet weak var windData: UILabel!
     
+    @IBOutlet weak var swellTitle: UILabel!
+    @IBOutlet weak var swellData: UILabel!
     
+    @IBOutlet weak var uvTitle: UILabel!
+    @IBOutlet weak var uvData: UILabel!
+    
+    @IBOutlet weak var waterTempTitle: UILabel!
+    @IBOutlet weak var waterTempData: UILabel!
+    
+    @IBOutlet weak var thermalSensTitle: UILabel!
+    @IBOutlet weak var thermalSensData: UILabel!
+    
+    @IBAction func favSwitchAction(_ sender: UIButton) {
+        if sender.currentImage == #imageLiteral(resourceName: "no_fav") {
+            beach?.fav = true
+            sender.setImage(#imageLiteral(resourceName: "fav"), for: .normal)
+        } else {
+            beach?.fav = false
+            sender.setImage(#imageLiteral(resourceName: "no_fav"), for: .normal)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareView()
+        setBeachUIData(forToday: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateBeach()
+        prepareFavouriteTableView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -42,6 +81,21 @@ class DetailBeachViewController: UIViewController {
         self.todayButton.image = resizeImage(getDayImage(forToday: true), width: 30.0, height: 30.0)
         self.tomorrowButton.title = labelsText.tomorrow
         self.tomorrowButton.image = resizeImage(getDayImage(forToday: false), width: 30.0, height: 30.0)
+        
+        self.windTitle.text = labelsText.windTitle
+        self.swellTitle.text = labelsText.swellTitle
+        self.uvTitle.text = labelsText.uvTitle
+        self.waterTempTitle.text = labelsText.waterTempTitle
+        self.thermalSensTitle.text = labelsText.thermalSensTitle
+        
+        self.beachImageView.backgroundColor = UIColor.seaSunBlue
+        self.mapButton.setImage(#imageLiteral(resourceName: "location_icon"), for: .normal)
+        self.mapButton.imageView?.tintColor = .black
+        self.mapButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        self.favSwitch.setImage(getIsBeachFav(), for: .normal)
+        self.favSwitch.imageView?.tintColor = .black
+        self.favSwitch.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         
     }
     
@@ -64,6 +118,18 @@ class DetailBeachViewController: UIViewController {
         self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)*/
     }
     
+    private func getIsBeachFav() -> UIImage {
+        if let fav = self.beach?.fav {
+            if fav {
+                return #imageLiteral(resourceName: "fav")
+            } else {
+                return #imageLiteral(resourceName: "no_fav")
+            }
+        } else {
+            return #imageLiteral(resourceName: "error")
+        }
+    }
+    
     private func resizeImage(_ image: UIImage, width: Float, height: Float) -> UIImage {
         let size = CGSize(width: CGFloat(width),height: CGFloat(height))
         let rect = CGRect(x: 0, y: 0, width: CGFloat(height), height: CGFloat(width))
@@ -74,15 +140,44 @@ class DetailBeachViewController: UIViewController {
         return newImage!
     }
     
+    private func updateBeach() {
+        managedObjectContext?.performAndWait {
+            let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
+            fetchRequest.predicate = NSPredicate(format: "webCode == %@", (self.beach?.webCode)!)
+            do {
+                let beachCD = try self.managedObjectContext?.fetch(fetchRequest)
+                beachCD?[0].setValue(self.beach!.fav, forKey: "fav")
+                try self.managedObjectContext?.save()
+                
+            } catch let error{
+                print("Error updating beaches: \(error)")
+            }
+        }
+    }
+    
+    private func prepareFavouriteTableView() {
+        
+        let vcCount = self.navigationController?.viewControllers.count
+        if let favVC = self.navigationController?.viewControllers[vcCount! - 1] as? FavouriteBeachesTableViewController {
+            favVC.fromDetailBeaches = true
+        }
+    }
+    
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        switch segue.identifier {
+        case Segues.detailToMap?:
+            if let ivc = segue.destination as? MapRoadToViewController {
+                ivc.goToBeach = self.beach
+            }
+        default:
+            break
+        }
     }
-    */
+ 
 
 }

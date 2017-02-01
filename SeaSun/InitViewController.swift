@@ -48,6 +48,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Outlet de boton de favoritos
     @IBOutlet weak var favouritesButton: UINavigationItem!
+    @IBOutlet weak var favButton: UIBarButtonItem!
     
     // Barra de busqueda
     @IBOutlet weak var searchBeachBar: UISearchBar!
@@ -87,6 +88,8 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        favouritesButton.title = labelsText.appName
+        favButton.title = labelsText.favourites
         // Do any additional setup after loading the view.
         self.showDataCompositionView.sendSubview(toBack: beachImage)
         getAemetXML(beachCode: (nearestBeach?.webCode)!)
@@ -112,20 +115,20 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     private func setNearestBeachUIData() {
         if let prediction = beachXML?.prediction?[0] {
             self.tempLabel?.text =  String(describing: (prediction.maxTemp)!)+"º"
-            self.waterTempLabel?.text = "Water temperature: " + prediction.waterTemp!.description
-            self.UVLabel?.text = "Max UV: " + String(describing: prediction.maxUV!)
+            self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + prediction.waterTemp!.description
+            self.UVLabel?.text = labelsText.uvTitle + ": " + String(describing: prediction.maxUV!)
         } else {
             self.tempLabel?.text =  "--º"
-            self.waterTempLabel?.text = "Water temperature: Error"
-            self.UVLabel?.text = "Max UV: Error"
+            self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + labelsText.error
+            self.UVLabel?.text = labelsText.uvTitle + ": " + labelsText.error
         }
         self.stateImage.image = getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
-        self.nameBeachLabel?.text = (nearestBeach?.name) ?? "Error"
-        self.cityBeachLabel?.text = (nearestBeach?.city) ?? "Error"
-        self.windSpeedLabel?.text = "Wind: " +
+        self.nameBeachLabel?.text = (nearestBeach?.name) ?? labelsText.error
+        self.cityBeachLabel?.text = (nearestBeach?.city) ?? labelsText.error
+        self.windSpeedLabel?.text = labelsText.windTitle + ": " +
             getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
-        self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
+        self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
     }
     
     func getStateImage(withCode: Int?) -> UIImage {
@@ -158,7 +161,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func initSearchBar() {
-        self.searchBeachBar.placeholder = "Search beach..."
+        self.searchBeachBar.placeholder = labelsText.searchBeachPlaceholder + "..."
     }
     
     func initTableView() {
