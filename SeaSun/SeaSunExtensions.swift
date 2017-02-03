@@ -140,6 +140,27 @@ extension UIColor {
     
 }
 
+public func getStateImage(withCode: Int?) -> UIImage {
+    
+    let code = withCode ?? -1
+    
+    switch code {
+    case 100:
+        return #imageLiteral(resourceName: "wi_sun")
+    case 110:
+        return #imageLiteral(resourceName: "wi_partly_cloudy")
+    case 120:
+        return #imageLiteral(resourceName: "wi_cloudy")
+    case 130:
+        return #imageLiteral(resourceName: "wi_partly_cloudy_rain")
+    case 140:
+        return #imageLiteral(resourceName: "wi_rain")
+    default:
+        return #imageLiteral(resourceName: "error")
+    }
+    
+}
+
 public func getDayImage(forToday today: Bool) -> UIImage {
     
     let calendar = Calendar.autoupdatingCurrent

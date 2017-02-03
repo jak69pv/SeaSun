@@ -130,27 +130,6 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
             getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
         self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
     }
-    
-    func getStateImage(withCode: Int?) -> UIImage {
-        
-        let code = withCode ?? -1
-        
-        switch code {
-        case 100:
-            return #imageLiteral(resourceName: "wi_sun")
-        case 110:
-            return #imageLiteral(resourceName: "wi_partly_cloudy")
-        case 120:
-            return #imageLiteral(resourceName: "wi_cloudy")
-        case 130:
-            return #imageLiteral(resourceName: "wi_partly_cloudy_rain")
-        case 140:
-            return #imageLiteral(resourceName: "wi_rain")
-        default:
-            return #imageLiteral(resourceName: "error")
-        }
-        
-    }
 
     private func getAemetXML(beachCode: String) {
         // URL Tipo

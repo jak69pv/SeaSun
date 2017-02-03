@@ -9,11 +9,13 @@
 import UIKit
 import CoreData
 
-class DetailBeachViewController: UIViewController {
+class DetailBeachViewController: UIViewController, UITabBarDelegate {
     
     var beach: Beach?
     
     var beachXML: BeachXMLModel?
+    
+    var showToday: Bool?
     
     // Variable para CoreData
     let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
@@ -57,10 +59,16 @@ class DetailBeachViewController: UIViewController {
         }
     }
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareView()
-        setBeachUIData(forToday: true)
+        self.showToday = true
+        self.changeDaysTab.delegate = self
+        if beachXML == nil {
+            getAemetXML(beachCode: (beach?.webCode!)!)
+        }
+        setBeachUIData(forToday: showToday!)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -97,25 +105,39 @@ class DetailBeachViewController: UIViewController {
         self.favSwitch.imageView?.contentMode = UIViewContentMode.scaleAspectFit
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         
+        self.todayButton.tag = 0
+        self.tomorrowButton.tag = 1
+        
     }
     
     private func setBeachUIData(forToday today: Bool) {
-       /* if let prediction = beachXML?.prediction?[0] {
-            self.temperatureLabel?.text =  String(describing: (prediction.maxTemp)!)+"º"
-            self.waterTempLabel?.text = "Water temperature: " + prediction.waterTemp!.description
-            self.UVLabel?.text = "Max UV: " + String(describing: prediction.maxUV!)
+        var prediction: DayXMLData?
+        var dayStageIndex: Int?
+        if today {
+            prediction = beachXML?.prediction?[0]
+            let hour = Calendar.current.component(.hour, from: Date())
+            dayStageIndex = (hour < 13 && hour > 0) ? 0 : 1
         } else {
-            self.tempLabel?.text =  "--º"
-            self.waterTempLabel?.text = "Water temperature: Error"
-            self.UVLabel?.text = "Max UV: Error"
+            prediction = beachXML?.prediction?[1]
+            dayStageIndex = 0
         }
-        self.stateImage.image = getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
-        self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
-        self.nameBeachLabel?.text = (nearestBeach?.name) ?? "Error"
-        self.cityBeachLabel?.text = (nearestBeach?.city) ?? "Error"
-        self.windSpeedLabel?.text = "Wind: " +
-            getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
-        self.swellLabel?.text = "Swell: " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)*/
+        if let checkedPrediction = prediction {
+            self.temperetureLabel?.text = "\(checkedPrediction.maxTemp!)º"
+            self.weatherIcon.image = getStateImage(withCode: checkedPrediction.skyState?[dayStageIndex!].f)
+            self.windData?.text = getWindString(withCode: checkedPrediction.wind?[dayStageIndex!].f)
+            self.swellData?.text = getSwellString(withCode: checkedPrediction.swell?[dayStageIndex!].f)
+            self.uvData?.text = "\(checkedPrediction.maxUV!)"
+            self.waterTempData?.text = "\(checkedPrediction.waterTemp!)º"
+            self.thermalSensData?.text = getTermSensationString(withCode:  checkedPrediction.termSensation.f)
+        } else {
+            self.temperetureLabel?.text = "--º"
+            self.weatherIcon.image = #imageLiteral(resourceName: "error")
+            self.windData?.text = getWindString(withCode: -1)
+            self.swellData?.text = getSwellString(withCode: -1)
+            self.uvData?.text = "-"
+            self.waterTempData?.text = "--º"
+            self.thermalSensData?.text = getTermSensationString(withCode: -1)
+        }
     }
     
     private func getIsBeachFav() -> UIImage {
@@ -161,6 +183,25 @@ class DetailBeachViewController: UIViewController {
         if let favVC = self.navigationController?.viewControllers[vcCount! - 1] as? FavouriteBeachesTableViewController {
             favVC.fromDetailBeaches = true
         }
+    }
+    
+    private func getAemetXML(beachCode: String) {
+        beachXML = BeachXMLModel(with: beachCode)
+        beachXML?.parser()
+    }
+    
+    // Funcion para gestionar cuando se pulsa un boton de la TabBar
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        
+        switch item.tag {
+        case 0:
+            self.showToday = true
+        case 1:
+            self.showToday = false
+        default:
+            break
+        }
+        setBeachUIData(forToday: self.showToday!)
     }
     
 

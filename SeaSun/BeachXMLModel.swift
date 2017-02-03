@@ -77,9 +77,9 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
             dayData?.swell = fillTwoValueData(with: attributeDict)
         case DayXMLTags.maxTemp:
             dayData?.maxTemp = Int(attributeDict[DayXMLProperties.value1]!)!
-        case DayXMLTags.tempSensation:
-            dayData?.termSensation?.f = Int(attributeDict[DayXMLProperties.value1]!)!
-            dayData?.termSensation?.decription = attributeDict[DayXMLProperties.desc1]!
+        case DayXMLTags.termSensation:
+            dayData?.termSensation.f = Int(attributeDict[DayXMLProperties.value1]!)!
+            dayData?.termSensation.decription = attributeDict[DayXMLProperties.desc1]!
         case DayXMLTags.waterTemp:
             dayData?.waterTemp = Int(attributeDict[DayXMLProperties.value1]!)!
         case DayXMLTags.maxUV:
@@ -157,7 +157,7 @@ class DayXMLData: NSObject {
     var wind: [TwoValueData]?
     var swell: [TwoValueData]?
     var maxTemp: Int?
-    var termSensation: TwoValueData?
+    var termSensation = TwoValueData()
     var waterTemp: Int?
     var maxUV: Int?
     override init() {}
@@ -188,7 +188,7 @@ struct TermSensationDescription {
 }
 
     
-func getWindString(withCode: Int?) -> String {
+public func getWindString(withCode: Int?) -> String {
     
     let code = withCode ?? -1
     
@@ -205,7 +205,7 @@ func getWindString(withCode: Int?) -> String {
     
 }
 
-func getSwellString(withCode: Int?) -> String {
+public func getSwellString(withCode: Int?) -> String {
     
     let code = withCode ?? -1
     
@@ -222,19 +222,19 @@ func getSwellString(withCode: Int?) -> String {
     
 }
 
-func getTermSensationString(withCode: Int?) -> String {
+public func getTermSensationString(withCode: Int?) -> String {
     
     let code = withCode ?? -1
     
     switch code {
     case 410:
-        return TermSensationDescription.soft
+        return TermSensationDescription.nHeat
     case 420:
-        return TermSensationDescription.cold
+        return TermSensationDescription.soft
     case 430:
         return TermSensationDescription.vCold
     case 440:
-        return TermSensationDescription.nHeat
+        return TermSensationDescription.cold
     default:
         return TermSensationDescription.error
     }
@@ -256,7 +256,7 @@ struct DayXMLTags {
     static let wind = "viento"
     static let swell = "oleaje"
     static let maxTemp = "t_maxima"
-    static let tempSensation = "s_termica"
+    static let termSensation = "s_termica"
     static let waterTemp = "t_agua"
     static let maxUV = "uv_max"
 }
