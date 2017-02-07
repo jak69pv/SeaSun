@@ -182,8 +182,10 @@ struct WindDescription {
 struct TermSensationDescription {
     static let nHeat = "Nice Heat"
     static let soft = "Soft"
-    static let vCold = "Very Cold"
+    static let fresh = "Fresh"
+    static let vFresh = "Very Fresh"
     static let cold = "Cold"
+    static let vCold = "Very Cold"
     static let error = "Error"
 }
 
@@ -228,13 +230,17 @@ public func getTermSensationString(withCode: Int?) -> String {
     
     switch code {
     case 410:
-        return TermSensationDescription.nHeat
-    case 420:
-        return TermSensationDescription.soft
-    case 430:
         return TermSensationDescription.vCold
-    case 440:
+    case 420:
         return TermSensationDescription.cold
+    case 430:
+        return TermSensationDescription.vFresh
+    case 440:
+        return TermSensationDescription.fresh
+    case 450:
+        return TermSensationDescription.soft
+    case 460:
+        return TermSensationDescription.nHeat
     default:
         return TermSensationDescription.error
     }
