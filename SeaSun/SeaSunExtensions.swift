@@ -136,7 +136,12 @@ extension UIColor {
     
     //0x7EDDCE
     public class var seaSunBlue: UIColor {
-        return UIColor(red: CGFloat(0.494), green: CGFloat(0.867), blue: CGFloat(0.808), alpha: CGFloat(1.0)) }
+        return UIColor(red: 0.494, green: 0.867, blue: 0.808, alpha: 1.0) }
+    
+    //0xFFAA73
+    public class var seaSunOrange: UIColor {
+        return UIColor(red:1.00, green:0.67, blue:0.45, alpha:1.0) }
+
     
 }
 

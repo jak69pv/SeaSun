@@ -46,6 +46,8 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         performSegue(withIdentifier: Segues.initToDetail, sender: sender)
     }
     
+    @IBOutlet weak var nearestBeachLabel: UILabel!
+    
     // Outlet de boton de favoritos
     @IBOutlet weak var favouritesButton: UINavigationItem!
     @IBOutlet weak var favButton: UIBarButtonItem!
@@ -85,9 +87,10 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Vista con los datos de la playa mas cercna
     @IBOutlet weak var showDataCompositionView: UIView!
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
+        nearestBeachLabel.text = labelsText.nearestBeach
         favouritesButton.title = labelsText.appName
         favButton.title = labelsText.favourites
         // Do any additional setup after loading the view.
@@ -170,7 +173,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.accessoryType = UITableViewCellAccessoryType.none
         cell.accessoryView = UIImageView(image: #imageLiteral(resourceName: "disclosureBlack"))
         // Color de la celda
-        cell.backgroundColor = UIColor.seaSunBlue
+        cell.backgroundColor = UIColor.seaSunOrange
         // Estilo de seleccion
         cell.selectionStyle = UITableViewCellSelectionStyle.blue
         return cell

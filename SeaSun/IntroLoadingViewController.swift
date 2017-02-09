@@ -22,6 +22,8 @@ class IntroLoadingViewController: UIViewController, CLLocationManagerDelegate {
         static let nextBeachPrepared: Float = 1.0
     }
     
+    @IBOutlet weak var logoIW: UIImageView!
+    
     // Gestor de localización del usuario
     private let locationManager = CLLocationManager()
     
@@ -81,6 +83,8 @@ class IntroLoadingViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func initApp() {
+        logoIW.image = #imageLiteral(resourceName: "seaSunIcon")
+        logoIW.contentMode = .scaleAspectFill
         InitialProgressView.setProgress(progressPercentage.initialization,animated: true)
         let activate = DispatchWorkItem() { self.activateLocalization() }
         serialQueue.sync(execute: activate)
