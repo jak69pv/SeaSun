@@ -14,6 +14,8 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    // MARK: - Core Data stack
+    let stack = CoreDataStack(modelName: "SeaSun")!
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -27,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             preloadData(ofType: ResourcesNames.beach)
             defaults.set(true, forKey: "isPreloaded")
         }
+        stack.autoSave(everySeconds: 25)
         // Override point for customization after application launch.
         return true
     }
@@ -34,11 +37,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        stack.save()
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        stack.save()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -52,53 +57,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        self.saveContext()
     }
 
-    // MARK: - Core Data stack
 
-    lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-        */
-        let container = NSPersistentContainer(name: "SeaSun")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                 
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
     
     // MARK: - Core Data Saving support
-
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
     
     private struct ResourcesNames {
         static let zonesResource = "zonesData"
@@ -110,8 +73,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Functions for preload the data
     func preloadData (ofType type: String) {
         
-        let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
-        
         // Retrieve data from the source file
         let data = type == ResourcesNames.zone ? ResourcesNames.zonesResource : ResourcesNames.beachesResource
         if let contentsOfURL = Bundle.main.url(forResource: data, withExtension: "csv") {
@@ -121,58 +82,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if type == ResourcesNames.zone {
                 var error:NSError?
                 if let zones = parseCSV(contentsOfURL: contentsOfURL as NSURL, encoding: String.Encoding.utf8, type: type, error: &error) as? [(country:String,region:String,province:String,pZone:String,code:String)] {
+                    
                     // Preload the menu items
-                    managedObjectContext?.perform {
-                        for zone in zones {
-                            let zoneToSave = NSEntityDescription.insertNewObject(forEntityName: type, into: managedObjectContext!) as! Zone
-                            zoneToSave.country = zone.country
-                            zoneToSave.region = zone.region
-                            zoneToSave.province = zone.province
-                            zoneToSave.pZone = zone.pZone
-                            zoneToSave.code = zone.code
-                                                    
-                            // Guardamos en la base de datos
-                            do {
-                                try managedObjectContext?.save()
-                            } catch let error {
-                                print ("Could not save \(error), \(error.localizedDescription)")
-                            }
-                            
-                        }
+                    for zone in zones {
+                        print(zone.code)
+                        let _ = Zone(code: zone.code,
+                                     country: zone.country,
+                                     province: zone.province,
+                                     pZone: zone.pZone,
+                                     region: zone.region,
+                                     context: self.stack.context)
                     }
+                    stack.save()
                 }
             } else if type == ResourcesNames.beach {
                 var error:NSError?
                 if let beaches = parseCSV(contentsOfURL: contentsOfURL as NSURL, encoding: String.Encoding.utf8, type: type, error: &error) as? [(name:String,city:String,lat:Double,long:Double,fav:Bool,webCode:String,zoneCode:String)]? {
                     // Preload the menu items
-                    managedObjectContext?.perform {
-                        for beach in beaches! {
-                            let beachToSave = NSEntityDescription.insertNewObject(forEntityName: type, into: managedObjectContext!) as! Beach
-                            beachToSave.name = beach.name
-                            beachToSave.city = beach.city
-                            beachToSave.lat = beach.lat
-                            beachToSave.long = beach.long
-                            beachToSave.fav = beach.fav
-                            beachToSave.webCode = beach.webCode
-                            beachToSave.zoneCode = beach.zoneCode
-                            
-                            let fetchRequest = NSFetchRequest<Zone>(entityName: "Zone")
-                            fetchRequest.predicate = NSPredicate(format: "code == %@",beachToSave.zoneCode!)
-                            
-                            do {
-                                let searchZone = try managedObjectContext?.fetch(fetchRequest)
-                                
-                                print ("num of results = \(searchZone?.count) en \(beachToSave.zoneCode)")
-                                searchZone![0].addToBeaches(beachToSave)
-                                
-                                // Guardamos en la base de datos
-                                try managedObjectContext?.save()
-                                
-                            } catch let error {
-                                print ("Could not save \(error), \(error.localizedDescription)")
-                            }
-                        }
+                    for beach in beaches! {
+                        let _ = Beach(name: beach.name,
+                                             city: beach.city,
+                                             lat: beach.lat,
+                                             long: beach.long,
+                                             fav: beach.fav,
+                                             webCode: beach.webCode,
+                                             zoneCode: beach.zoneCode,
+                                             context: self.stack.context)
                     }
+                    stack.save()
                 }
             }
             
@@ -182,23 +119,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func removeData (ofType type: String) {
         // Remove the existing items
         
-        let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
-
-        managedObjectContext?.perform {
+        stack.context.perform {
             if type == ResourcesNames.zone {
                 //create a fetch request, telling it about the entity
                 let request: NSFetchRequest<Zone> = Zone.fetchRequest()
                 
                 do {
                     // go get the results
-                    let searchResults = try managedObjectContext?.fetch(request)
+                    let searchResults = try self.stack.context.fetch(request)
                     
                     //I like to check the size of the returned results!
-                    print ("num of results = \(searchResults?.count)")
+                    print ("num of results = \(searchResults.count)")
                     
                     // YOu need to convert to NSManagedObject to use 'for' loops
-                    for trans in searchResults! {
-                        managedObjectContext?.delete(trans)
+                    for trans in searchResults {
+                        self.stack.context.delete(trans)
                     }
                 } catch {
                     print("Error with request: \(error)")
@@ -206,10 +141,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } else if type == ResourcesNames.beach {
                 let request: NSFetchRequest<Beach> = Beach.fetchRequest()
                 do {
-                    let searchResults = try managedObjectContext?.fetch(request)
-                    print ("num of results = \(searchResults?.count)")
-                    for trans in searchResults! {
-                        managedObjectContext?.delete(trans)
+                    let searchResults = try self.stack.context.fetch(request)
+                    print ("num of results = \(searchResults.count)")
+                    for trans in searchResults {
+                        self.stack.context.delete(trans)
                     }
                 } catch {
                     print("Error with request: \(error)")

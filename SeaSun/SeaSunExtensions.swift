@@ -18,8 +18,8 @@ struct Segues {
     static let favToDetail = "Favourite to detail"
     static let detailToMap = "Detail to map"
     static let initToRegion = "Init to region"
-    static let regionToProvince = "Region to province"
-    static let provinceToZone = "Province to Zone"
+    static let provinceToBeach = "Province to beach"
+    static let beachToDetail = "Beach to detail"
     static let zoneToDetail = "Zone to detail"
 }
 

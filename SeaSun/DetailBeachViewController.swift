@@ -18,7 +18,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     var showToday: Bool?
     
     // Variable para CoreData
-    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    let managedObjectContext: NSManagedObjectContext? = /* NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)*/(UIApplication.shared.delegate as? AppDelegate)?.stack.context
     
     // Outlets de todos los componentes
     @IBOutlet weak var beachNameLabel: UILabel!
@@ -74,7 +74,6 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         updateBeach()
-        prepareFavouriteTableView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -163,7 +162,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     }
     
     private func updateBeach() {
-        managedObjectContext?.performAndWait {
+        managedObjectContext?.perform {
             let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
             fetchRequest.predicate = NSPredicate(format: "webCode == %@", (self.beach?.webCode)!)
             do {
@@ -176,14 +175,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
             }
         }
     }
-    
-    private func prepareFavouriteTableView() {
-        
-        let vcCount = self.navigationController?.viewControllers.count
-        if let favVC = self.navigationController?.viewControllers[vcCount! - 1] as? FavouriteBeachesTableViewController {
-            favVC.fromDetailBeaches = true
-        }
-    }
+
     
     private func getAemetXML(beachCode: String) {
         beachXML = BeachXMLModel(with: beachCode)
@@ -215,6 +207,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
             if let ivc = segue.destination as? MapRoadToViewController {
                 ivc.goToBeach = self.beach
             }
+
         default:
             break
         }

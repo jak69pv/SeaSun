@@ -65,7 +65,7 @@ class IntroLoadingViewController: UIViewController, CLLocationManagerDelegate {
     var beaches: [Beach]?
     
     // Variable para CoreData
-    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.stack.context
 
     // Barra de inicio
     @IBOutlet weak var InitialProgressView: UIProgressView!

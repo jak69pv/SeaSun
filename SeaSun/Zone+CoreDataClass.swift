@@ -11,5 +11,21 @@ import CoreData
 
 @objc(Zone)
 public class Zone: NSManagedObject {
+    
+    convenience init(code: String, country: String, province: String, pZone: String, region: String, context: NSManagedObjectContext) {
+        
+        if let ent = NSEntityDescription.entity(forEntityName: "Zone", in: context) {
+            self.init(entity: ent, insertInto: context)
+            self.code = code
+            self.country = country
+            self.province = province
+            self.pZone = pZone
+            self.region = region
+            self.beaches = NSSet()
+        } else {
+            fatalError("Unable to find entoty name")
+        }
+    }
+
 
 }

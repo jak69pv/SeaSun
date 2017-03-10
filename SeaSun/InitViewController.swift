@@ -15,11 +15,11 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     // Datos XML de la playa
     var beachXML: BeachXMLModel?
     
-    // Variable para CoreData
-    let managedObjectContext: NSManagedObjectContext? = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
-    
     // Contenido de la linea actual del XMLParser
     var currentContent = String()
+    
+    // CoreDataStack 
+    let stack = (UIApplication.shared.delegate as! AppDelegate).stack
     
     // Playa mas cercana
     var nearestBeach: Beach? {
@@ -180,25 +180,19 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Presentamos el Main.storyboard
-        let storyboard = self.storyboard
-        let bigZone = self.itemsRow[indexPath.row]
-        let zones =  self.getZones(bigZone)
-        // Inicializamos el view cotroller de este storyboard y pasamos las variables
-        let nextView: SelectProvinceZoneTableViewController = storyboard?.instantiateViewController(withIdentifier: "SelectProvinceTableViewController") as! SelectProvinceZoneTableViewController
-        nextView.bigZone = bigZone
-        nextView.zones = zones        // Inicializamos el view controller y le pasamos el VC
-        self.navigationController?.pushViewController(nextView, animated: true)
+        
+        performSegue(withIdentifier: Segues.initToRegion, sender: itemsRow[indexPath.row])
+
     }
     
     private func getZones(_ bigZone: String) -> ([Zone]?/*, [String]?, [[String]]?*/) {
         var zones: [Zone]?
         //var zonesToArray: ([String]?, [[String]]?)
-        managedObjectContext?.performAndWait {
+        stack.context.performAndWait {
             let fetchRequest = NSFetchRequest<Zone>(entityName: "Zone")
             fetchRequest.predicate = NSPredicate(format: "region == %@", bigZone)
             do {
-                zones = try self.managedObjectContext?.fetch(fetchRequest)
+                zones = try self.stack.context.fetch(fetchRequest)
                 //zonesToArray = self.zonesToArray(inZones: zones)
                 print(zones?.count ?? -1)
                 
@@ -218,13 +212,57 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         switch segue.identifier {
         case Segues.initToFav?:
-            break // TODO (or not)
+            
+            if let favVC = segue.destination as? FavouriteBeachesTableViewController {
+
+                // Creamos la fetch request
+                let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Beach")
+                fr.sortDescriptors = [NSSortDescriptor(key: "city", ascending: true)]
+                
+                fr.predicate = NSPredicate(format: "fav == %@", argumentArray: [true])
+                
+                // Create FetchedResultController
+                let fc = NSFetchedResultsController(
+                    fetchRequest: fr,
+                    managedObjectContext: self.stack.context,
+                    sectionNameKeyPath: "city",
+                    cacheName: nil)
+                
+                // Inject it into favVC
+                favVC.fetchedResultsController = fc
+                
+            }
+            
         case Segues.initToDetail?:
             if let ivc = segue.destination as? DetailBeachViewController {
                 ivc.beach = nearestBeach
                 ivc.beachXML = self.beachXML
+            }
+            
+        case Segues.initToRegion?:
+            
+            if let regionVC = segue.destination as? SelectProvinceZoneTableViewController {
+                
+                // Creamos la fetch request
+                let fr = NSFetchRequest<NSFetchRequestResult>(entityName: "Zone")
+                fr.sortDescriptors = [NSSortDescriptor(key: "province", ascending: true)]
+                
+                fr.predicate = NSPredicate(format: "region == %@", argumentArray: [sender as! String])
+                
+                // Create FetchedResultController
+                let fc = NSFetchedResultsController(
+                    fetchRequest: fr,
+                    managedObjectContext: self.stack.context,
+                    sectionNameKeyPath: "province",
+                    cacheName: nil)
+                
+                // Inject it into favVC
+                regionVC.fetchedResultsController = fc
+                regionVC.bigZone = sender as? String
+                
             }
         default:
             break
