@@ -18,7 +18,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     var showToday: Bool?
     
     // Variable para CoreData
-    let managedObjectContext: NSManagedObjectContext? = /* NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)*/(UIApplication.shared.delegate as? AppDelegate)?.stack.context
+    var managedObjectContext: NSManagedObjectContext?
     
     // Outlets de todos los componentes
     @IBOutlet weak var beachNameLabel: UILabel!
