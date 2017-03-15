@@ -2,8 +2,8 @@
 //  Beach+CoreDataProperties.swift
 //  SeaSun
 //
-//  Created by Alberto Ramis on 28/11/16.
-//  Copyright © 2016 Alberto Ramis. All rights reserved.
+//  Created by Alberto Ramis on 13/3/17.
+//  Copyright © 2017 Alberto Ramis. All rights reserved.
 //
 
 import Foundation
@@ -24,5 +24,23 @@ extension Beach {
     @NSManaged public var webCode: String?
     @NSManaged public var zoneCode: String?
     @NSManaged public var beachZone: Zone?
+    @NSManaged public var weather: NSSet?
+
+}
+
+// MARK: Generated accessors for weather
+extension Beach {
+
+    @objc(addWeatherObject:)
+    @NSManaged public func addToWeather(_ value: Weather)
+
+    @objc(removeWeatherObject:)
+    @NSManaged public func removeFromWeather(_ value: Weather)
+
+    @objc(addWeather:)
+    @NSManaged public func addToWeather(_ values: NSSet)
+
+    @objc(removeWeather:)
+    @NSManaged public func removeFromWeather(_ values: NSSet)
 
 }

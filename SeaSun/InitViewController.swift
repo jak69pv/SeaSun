@@ -15,6 +15,9 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     // Datos XML de la playa
     var beachXML: BeachXMLModel?
     
+    // Datos de la BBDD de la playa
+    var prediction: [Weather]?
+    
     // Contenido de la linea actual del XMLParser
     var currentContent = String()
     
@@ -93,12 +96,21 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         nearestBeachLabel.text = labelsText.nearestBeach
         favouritesButton.title = labelsText.appName
         favButton.title = labelsText.favourites
-        // Do any additional setup after loading the view.
-        self.showDataCompositionView.sendSubview(toBack: beachImage)
-        getAemetXML(beachCode: (nearestBeach?.webCode)!)
-        setNearestBeachUIData()
         initTableView()
         initSearchBar()
+        // Do any additional setup after loading the view.
+        self.showDataCompositionView.sendSubview(toBack: beachImage)
+        prediction = Weather.getPrediction(context: stack.context, beach: nearestBeach!)
+        if prediction == nil && isInternetAvailable(){
+            DispatchQueue.global(qos: .background).async {
+                self.getAemetXML(beachCode: (self.nearestBeach?.webCode)!)
+                DispatchQueue.main.sync {
+                    self.prediction = Weather.addWeatherPrediction(context: self.stack.context, beach: self.nearestBeach!, beachData: self.beachXML!)
+                    self.setNearestBeachUIData()
+                }
+            }
+        } else { print(prediction![0])
+            setNearestBeachUIData() }
     }
     
     // Cuando la vista va a desaparecer
@@ -116,22 +128,22 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func setNearestBeachUIData() {
-        if let prediction = beachXML?.prediction?[0] {
-            self.tempLabel?.text =  String(describing: (prediction.maxTemp)!)+"º"
-            self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + prediction.waterTemp!.description
-            self.UVLabel?.text = labelsText.uvTitle + ": " + String(describing: prediction.maxUV!)
+        if prediction != nil  {
+            self.tempLabel?.text =  String(describing: prediction![0].maxTemp)+"º"
+            self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + prediction![0].waterTemp.description
+            self.UVLabel?.text = labelsText.uvTitle + ": " + String(describing: prediction![0].maxUV)
         } else {
             self.tempLabel?.text =  "--º"
             self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + labelsText.error
             self.UVLabel?.text = labelsText.uvTitle + ": " + labelsText.error
         }
-        self.stateImage.image = getStateImage(withCode: beachXML?.prediction?[0].skyState?[0].f)
+        self.stateImage.image = getStateImage(withCode: Int(prediction![0].skyState1))
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         self.nameBeachLabel?.text = (nearestBeach?.name) ?? labelsText.error
         self.cityBeachLabel?.text = (nearestBeach?.city) ?? labelsText.error
         self.windSpeedLabel?.text = labelsText.windTitle + ": " +
-            getWindString(withCode: beachXML!.prediction?[0].wind?[0].f)
-        self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: beachXML?.prediction?[0].swell?[0].f)
+            getWindString(withCode: Int(prediction![0].wind1))
+        self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: Int(prediction![0].swell1))
     }
 
     private func getAemetXML(beachCode: String) {
@@ -240,6 +252,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
             if let ivc = segue.destination as? DetailBeachViewController {
                 ivc.beach = nearestBeach
                 ivc.beachXML = self.beachXML
+                ivc.managedObjectContext = self.stack.context
             }
             
         case Segues.initToRegion?:
@@ -269,3 +282,5 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 }
+
+

@@ -2,14 +2,14 @@
 //  Beach+CoreDataClass.swift
 //  SeaSun
 //
-//  Created by Alberto Ramis on 28/11/16.
-//  Copyright © 2016 Alberto Ramis. All rights reserved.
+//  Created by Alberto Ramis on 13/3/17.
+//  Copyright © 2017 Alberto Ramis. All rights reserved.
 //
 
 import Foundation
 import CoreData
 
-@objc(Beach)
+
 public class Beach: NSManagedObject {
     
     convenience init(name: String, city: String, lat: Double, long: Double, fav: Bool, webCode: String, zoneCode: String, context: NSManagedObjectContext) {
@@ -23,6 +23,7 @@ public class Beach: NSManagedObject {
             self.fav = fav
             self.webCode = webCode
             self.zoneCode = zoneCode
+            self.weather = NSSet()
             
             context.perform {
                 
@@ -43,5 +44,6 @@ public class Beach: NSManagedObject {
             fatalError("Unable to find entoty name")
         }
     }
+
 
 }

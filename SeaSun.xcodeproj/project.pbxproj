@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		D320FA9C1E72DB24005AFBB3 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D320FA9B1E72DB24005AFBB3 /* CoreDataStack.swift */; };
 		D320FAA01E72E87A005AFBB3 /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D320FA9F1E72E87A005AFBB3 /* CoreDataTableViewController.swift */; };
+		D353F5B51E7729CD00AE7FDA /* Beach+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D353F5B21E7729CD00AE7FDA /* Beach+CoreDataClass.swift */; };
+		D353F5B61E7729CD00AE7FDA /* Beach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D353F5B31E7729CD00AE7FDA /* Beach+CoreDataProperties.swift */; };
+		D353F5BB1E7729FD00AE7FDA /* Zone+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D353F5B91E7729FD00AE7FDA /* Zone+CoreDataProperties.swift */; };
 		D36FB3381DD9DAF500830020 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D36FB3371DD9DAF500830020 /* AppDelegate.swift */; };
 		D36FB33D1DD9DAF500830020 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D36FB33B1DD9DAF500830020 /* Main.storyboard */; };
 		D36FB3401DD9DAF500830020 /* SeaSun.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D36FB33E1DD9DAF500830020 /* SeaSun.xcdatamodeld */; };
@@ -22,15 +25,14 @@
 		D371AC061DDF542F00959D4B /* zonesData.csv in Resources */ = {isa = PBXBuildFile; fileRef = D371AC051DDF542F00959D4B /* zonesData.csv */; };
 		D37759571DEC4FA1003EEA72 /* beachData.csv in Resources */ = {isa = PBXBuildFile; fileRef = D37759561DEC4FA1003EEA72 /* beachData.csv */; };
 		D37759641DEC7DEF003EEA72 /* Zone+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37759601DEC7DEF003EEA72 /* Zone+CoreDataClass.swift */; };
-		D37759651DEC7DEF003EEA72 /* Zone+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37759611DEC7DEF003EEA72 /* Zone+CoreDataProperties.swift */; };
-		D37759661DEC7DEF003EEA72 /* Beach+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37759621DEC7DEF003EEA72 /* Beach+CoreDataClass.swift */; };
-		D37759671DEC7DEF003EEA72 /* Beach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37759631DEC7DEF003EEA72 /* Beach+CoreDataProperties.swift */; };
 		D37ED8D11E0AD4B400FC1A07 /* BeachXMLModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37ED8D01E0AD4B400FC1A07 /* BeachXMLModel.swift */; };
 		D37EFE441DF70EEB001D1376 /* FavouriteBeachesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37EFE431DF70EEB001D1376 /* FavouriteBeachesTableViewController.swift */; };
 		D37EFE461DF71017001D1376 /* DetailBeachViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37EFE451DF71017001D1376 /* DetailBeachViewController.swift */; };
 		D37EFE481DF7109E001D1376 /* SelectProvinceZoneTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37EFE471DF7109E001D1376 /* SelectProvinceZoneTableViewController.swift */; };
 		D37EFE4C1DF71219001D1376 /* MapRoadToViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D37EFE4B1DF71219001D1376 /* MapRoadToViewController.swift */; };
 		D38960A81E1A945D00DB9926 /* SelectBeachTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38960A71E1A945D00DB9926 /* SelectBeachTableViewController.swift */; };
+		D3F7537E1E7809A10056C7D2 /* Weather+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F7537C1E7809A10056C7D2 /* Weather+CoreDataClass.swift */; };
+		D3F7537F1E7809A10056C7D2 /* Weather+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F7537D1E7809A10056C7D2 /* Weather+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,10 @@
 /* Begin PBXFileReference section */
 		D320FA9B1E72DB24005AFBB3 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		D320FA9F1E72E87A005AFBB3 /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
+		D353F5A31E770F0600AE7FDA /* SeaSun2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SeaSun2.xcdatamodel; sourceTree = "<group>"; };
+		D353F5B21E7729CD00AE7FDA /* Beach+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Beach+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D353F5B31E7729CD00AE7FDA /* Beach+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Beach+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D353F5B91E7729FD00AE7FDA /* Zone+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Zone+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D36FB3341DD9DAF500830020 /* SeaSun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeaSun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D36FB3371DD9DAF500830020 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D36FB33C1DD9DAF500830020 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -63,9 +69,6 @@
 		D371AC051DDF542F00959D4B /* zonesData.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = zonesData.csv; sourceTree = "<group>"; };
 		D37759561DEC4FA1003EEA72 /* beachData.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = beachData.csv; sourceTree = "<group>"; };
 		D37759601DEC7DEF003EEA72 /* Zone+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Zone+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D37759611DEC7DEF003EEA72 /* Zone+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Zone+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D37759621DEC7DEF003EEA72 /* Beach+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Beach+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D37759631DEC7DEF003EEA72 /* Beach+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Beach+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D37ED8D01E0AD4B400FC1A07 /* BeachXMLModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeachXMLModel.swift; sourceTree = "<group>"; };
 		D37EFE311DF6E430001D1376 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		D37EFE321DF6E430001D1376 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -76,6 +79,8 @@
 		D37EFE471DF7109E001D1376 /* SelectProvinceZoneTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectProvinceZoneTableViewController.swift; sourceTree = "<group>"; };
 		D37EFE4B1DF71219001D1376 /* MapRoadToViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapRoadToViewController.swift; path = ../MapRoadToViewController.swift; sourceTree = "<group>"; };
 		D38960A71E1A945D00DB9926 /* SelectBeachTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectBeachTableViewController.swift; sourceTree = "<group>"; };
+		D3F7537C1E7809A10056C7D2 /* Weather+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Weather+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D3F7537D1E7809A10056C7D2 /* Weather+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Weather+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,10 +129,12 @@
 		D332BB8B1DE4916200F264D5 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
+				D353F5B21E7729CD00AE7FDA /* Beach+CoreDataClass.swift */,
+				D353F5B31E7729CD00AE7FDA /* Beach+CoreDataProperties.swift */,
+				D353F5B91E7729FD00AE7FDA /* Zone+CoreDataProperties.swift */,
 				D37759601DEC7DEF003EEA72 /* Zone+CoreDataClass.swift */,
-				D37759611DEC7DEF003EEA72 /* Zone+CoreDataProperties.swift */,
-				D37759621DEC7DEF003EEA72 /* Beach+CoreDataClass.swift */,
-				D37759631DEC7DEF003EEA72 /* Beach+CoreDataProperties.swift */,
+				D3F7537D1E7809A10056C7D2 /* Weather+CoreDataProperties.swift */,
+				D3F7537C1E7809A10056C7D2 /* Weather+CoreDataClass.swift */,
 				D36FB33E1DD9DAF500830020 /* SeaSun.xcdatamodeld */,
 				D320FA9B1E72DB24005AFBB3 /* CoreDataStack.swift */,
 			);
@@ -308,20 +315,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3F7537E1E7809A10056C7D2 /* Weather+CoreDataClass.swift in Sources */,
 				D371ABFF1DDF263B00959D4B /* SeaSunExtensions.swift in Sources */,
+				D353F5B61E7729CD00AE7FDA /* Beach+CoreDataProperties.swift in Sources */,
 				D36FB3381DD9DAF500830020 /* AppDelegate.swift in Sources */,
 				D371AC041DDF418100959D4B /* InitViewController.swift in Sources */,
-				D37759671DEC7DEF003EEA72 /* Beach+CoreDataProperties.swift in Sources */,
 				D37EFE4C1DF71219001D1376 /* MapRoadToViewController.swift in Sources */,
-				D37759661DEC7DEF003EEA72 /* Beach+CoreDataClass.swift in Sources */,
-				D37759651DEC7DEF003EEA72 /* Zone+CoreDataProperties.swift in Sources */,
 				D320FA9C1E72DB24005AFBB3 /* CoreDataStack.swift in Sources */,
 				D36FB3401DD9DAF500830020 /* SeaSun.xcdatamodeld in Sources */,
 				D37EFE481DF7109E001D1376 /* SelectProvinceZoneTableViewController.swift in Sources */,
 				D37EFE441DF70EEB001D1376 /* FavouriteBeachesTableViewController.swift in Sources */,
 				D320FAA01E72E87A005AFBB3 /* CoreDataTableViewController.swift in Sources */,
 				D371ABFD1DDF1C6D00959D4B /* IntroLoadingViewController.swift in Sources */,
+				D353F5B51E7729CD00AE7FDA /* Beach+CoreDataClass.swift in Sources */,
+				D3F7537F1E7809A10056C7D2 /* Weather+CoreDataProperties.swift in Sources */,
 				D37EFE461DF71017001D1376 /* DetailBeachViewController.swift in Sources */,
+				D353F5BB1E7729FD00AE7FDA /* Zone+CoreDataProperties.swift in Sources */,
 				D37759641DEC7DEF003EEA72 /* Zone+CoreDataClass.swift in Sources */,
 				D38960A81E1A945D00DB9926 /* SelectBeachTableViewController.swift in Sources */,
 				D37ED8D11E0AD4B400FC1A07 /* BeachXMLModel.swift in Sources */,
@@ -473,6 +482,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ZVLPZ5RMU6;
 				INFOPLIST_FILE = SeaSun/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.albertoramis.SeaSun;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -486,6 +496,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ZVLPZ5RMU6;
 				INFOPLIST_FILE = SeaSun/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.albertoramis.SeaSun;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -559,9 +570,10 @@
 		D36FB33E1DD9DAF500830020 /* SeaSun.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D353F5A31E770F0600AE7FDA /* SeaSun2.xcdatamodel */,
 				D36FB33F1DD9DAF500830020 /* SeaSun.xcdatamodel */,
 			);
-			currentVersion = D36FB33F1DD9DAF500830020 /* SeaSun.xcdatamodel */;
+			currentVersion = D353F5A31E770F0600AE7FDA /* SeaSun2.xcdatamodel */;
 			path = SeaSun.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

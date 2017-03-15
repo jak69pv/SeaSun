@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct TwoValueData {
     var f : Int?
@@ -21,20 +22,16 @@ class BeachXMLModel: NSObject, XMLParserDelegate {
     var beachName: String?
     var city: String?
     var prediction: [DayXMLData]?
-    var beachCode: String
+    var beachCode: String?
     
     var currentContent: String?
-    
-    override init() {
-        self.beachCode = "4625001"
-    }
     
     init(with beachCode: String) {
         self.beachCode = beachCode
     }
     
     func parser() {
-        guard let beachURL = URL(string: AemetURL.url + beachCode + AemetURL.type) else {
+        guard let beachURL = URL(string: AemetURL.url + beachCode! + AemetURL.type) else {
             print("URL not defined properly")
             return
         }

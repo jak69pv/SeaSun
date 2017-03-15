@@ -2,8 +2,8 @@
 //  Zone+CoreDataProperties.swift
 //  SeaSun
 //
-//  Created by Alberto Ramis on 28/11/16.
-//  Copyright © 2016 Alberto Ramis. All rights reserved.
+//  Created by Alberto Ramis on 13/3/17.
+//  Copyright © 2017 Alberto Ramis. All rights reserved.
 //
 
 import Foundation
@@ -39,5 +39,5 @@ extension Zone {
 
     @objc(removeBeaches:)
     @NSManaged public func removeFromBeaches(_ values: NSSet)
-    
+
 }

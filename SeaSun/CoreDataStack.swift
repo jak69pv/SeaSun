@@ -75,14 +75,14 @@ struct CoreDataStack {
         self.dbURL = dbURL
         
         // Option for migration
-        //let options = [NSInferMappingModelAutomaticallyOption : true,
-        //               NSMigratePersistentStoresAutomaticallyOption : true]
+        /*let options = [NSInferMappingModelAutomaticallyOption : true,
+                       NSMigratePersistentStoresAutomaticallyOption : true]
         
-        //do{
-        //    try addStoreCoordinator(NSSQLiteStoreType, configuration: nil, storeURL: dbURL, options: options as [NSObject : Any])
-        //} catch {
-            
-        //}
+        do{
+            try addStoreCoordinator(NSSQLiteStoreType, configuration: nil, storeURL: dbURL, options: options as [NSObject : Any])
+        } catch {
+            print("Unable to add store at \(dbURL): \(error)")
+        }*/
         
     }
     
@@ -161,12 +161,8 @@ extension CoreDataStack {
         
         if delayInSeconds > 0 {
             //Save the context
-            do {
-                try self.context.save()
-                print("autosaving")
-            } catch {
-                print("Error while autosaving")
-            }
+            save()
+            print("autosaving")
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(delayInSeconds)) {

@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-@objc(Zone)
 public class Zone: NSManagedObject {
     
     convenience init(code: String, country: String, province: String, pZone: String, region: String, context: NSManagedObjectContext) {

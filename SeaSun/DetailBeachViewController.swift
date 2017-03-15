@@ -15,6 +15,8 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     
     var beachXML: BeachXMLModel?
     
+    var prediction: [Weather]?
+    
     var showToday: Bool?
     
     // Variable para CoreData
@@ -65,10 +67,21 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
         prepareView()
         self.showToday = true
         self.changeDaysTab.delegate = self
-        if beachXML == nil {
-            getAemetXML(beachCode: (beach?.webCode!)!)
+        prediction = Weather.getPrediction(context: managedObjectContext!, beach: beach!)
+        if prediction == nil && isInternetAvailable(){
+            DispatchQueue.global(qos: .background).async {
+                self.getAemetXML(beachCode: (self.beach?.webCode)!)
+                DispatchQueue.main.sync {
+                    self.prediction = Weather.addWeatherPrediction(context: self.managedObjectContext!, beach: self.beach!, beachData: self.beachXML!)
+                    self.setBeachUIData(forToday: self.showToday!)
+
+                }
+            }
+        } else {
+            print(prediction?[0])
+            if prediction?.count == 1 { tomorrowButton.isEnabled = false }
+            setBeachUIData(forToday: showToday!)
         }
-        setBeachUIData(forToday: showToday!)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -110,24 +123,31 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     }
     
     private func setBeachUIData(forToday today: Bool) {
-        var prediction: DayXMLData?
-        var dayStageIndex: Int?
+        var showPrediction: Weather?
+        var isMorning: Bool
         if today {
-            prediction = beachXML?.prediction?[0]
+            showPrediction = self.prediction?[0]
             let hour = Calendar.current.component(.hour, from: Date())
-            dayStageIndex = (hour < 13 && hour > 0) ? 0 : 1
+            isMorning = (hour < 13 && hour > 0) ? true : false
         } else {
-            prediction = beachXML?.prediction?[1]
-            dayStageIndex = 0
+            showPrediction = self.prediction?[1]
+            isMorning = true
         }
-        if let checkedPrediction = prediction {
-            self.temperetureLabel?.text = "\(checkedPrediction.maxTemp!)º"
-            self.weatherIcon.image = getStateImage(withCode: checkedPrediction.skyState?[dayStageIndex!].f)
-            self.windData?.text = getWindString(withCode: checkedPrediction.wind?[dayStageIndex!].f)
-            self.swellData?.text = getSwellString(withCode: checkedPrediction.swell?[dayStageIndex!].f)
-            self.uvData?.text = "\(checkedPrediction.maxUV!)"
-            self.waterTempData?.text = "\(checkedPrediction.waterTemp!)º"
-            self.thermalSensData?.text = getTermSensationString(withCode:  checkedPrediction.termSensation.f)
+        if let checkedPrediction = showPrediction {
+            if isMorning {
+                self.weatherIcon.image = getStateImage(withCode: Int(checkedPrediction.skyState1))
+                self.windData?.text = getWindString(withCode: Int(checkedPrediction.wind1))
+                self.swellData?.text = getSwellString(withCode: Int(checkedPrediction.swell1))
+
+            } else {
+                self.weatherIcon.image = getStateImage(withCode: Int(checkedPrediction.skyState2))
+                self.windData?.text = getWindString(withCode: Int(checkedPrediction.wind2))
+                self.swellData?.text = getSwellString(withCode: Int(checkedPrediction.swell2))
+            }
+            self.temperetureLabel?.text = "\(checkedPrediction.maxTemp)º"
+            self.uvData?.text = "\(checkedPrediction.maxUV)"
+            self.waterTempData?.text = "\(checkedPrediction.waterTemp)º"
+            self.thermalSensData?.text = getTermSensationString(withCode:  Int(checkedPrediction.termSensation))
         } else {
             self.temperetureLabel?.text = "--º"
             self.weatherIcon.image = #imageLiteral(resourceName: "error")
