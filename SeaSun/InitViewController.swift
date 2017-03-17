@@ -101,7 +101,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Do any additional setup after loading the view.
         self.showDataCompositionView.sendSubview(toBack: beachImage)
         prediction = Weather.getPrediction(context: stack.context, beach: nearestBeach!)
-        if prediction == nil && isInternetAvailable(){
+        if (prediction == nil || prediction!.count == 1) && isInternetAvailable(){
             DispatchQueue.global(qos: .background).async {
                 self.getAemetXML(beachCode: (self.nearestBeach?.webCode)!)
                 DispatchQueue.main.sync {
@@ -109,8 +109,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.setNearestBeachUIData()
                 }
             }
-        } else { print(prediction![0])
-            setNearestBeachUIData() }
+        } else { setNearestBeachUIData() }
     }
     
     // Cuando la vista va a desaparecer
@@ -132,18 +131,22 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.tempLabel?.text =  String(describing: prediction![0].maxTemp)+"º"
             self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + prediction![0].waterTemp.description
             self.UVLabel?.text = labelsText.uvTitle + ": " + String(describing: prediction![0].maxUV)
+            self.stateImage.image = getStateImage(withCode: Int(prediction![0].skyState1))
+            self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: Int(prediction![0].swell1))
+            self.windSpeedLabel?.text = labelsText.windTitle + ": " +
+             getWindString(withCode: Int(prediction![0].wind1))
         } else {
             self.tempLabel?.text =  "--º"
             self.waterTempLabel?.text = labelsText.waterTempTitle + ": " + labelsText.error
             self.UVLabel?.text = labelsText.uvTitle + ": " + labelsText.error
+            self.stateImage.image = #imageLiteral(resourceName: "error")
+            self.swellLabel?.text = labelsText.swellTitle + ": " + labelsText.error
+            self.windSpeedLabel?.text = labelsText.windTitle + ": " + labelsText.error
         }
-        self.stateImage.image = getStateImage(withCode: Int(prediction![0].skyState1))
         self.beachImage.image = #imageLiteral(resourceName: "val_malvarrosa_intro")
         self.nameBeachLabel?.text = (nearestBeach?.name) ?? labelsText.error
         self.cityBeachLabel?.text = (nearestBeach?.city) ?? labelsText.error
-        self.windSpeedLabel?.text = labelsText.windTitle + ": " +
-            getWindString(withCode: Int(prediction![0].wind1))
-        self.swellLabel?.text = labelsText.swellTitle + ": " + getSwellString(withCode: Int(prediction![0].swell1))
+
     }
 
     private func getAemetXML(beachCode: String) {
@@ -275,6 +278,7 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // Inject it into favVC
                 regionVC.fetchedResultsController = fc
                 regionVC.bigZone = sender as? String
+                regionVC.title = sender as? String
                 
             }
         default:

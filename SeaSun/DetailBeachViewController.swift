@@ -15,7 +15,12 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     
     var beachXML: BeachXMLModel?
     
-    var prediction: [Weather]?
+    var prediction: [Weather]? {
+        didSet {
+            print("cambio los datos")
+            self.setBeachUIData(forToday: self.showToday!)
+        }
+    }
     
     var showToday: Bool?
     
@@ -67,21 +72,7 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
         prepareView()
         self.showToday = true
         self.changeDaysTab.delegate = self
-        prediction = Weather.getPrediction(context: managedObjectContext!, beach: beach!)
-        if prediction == nil && isInternetAvailable(){
-            DispatchQueue.global(qos: .background).async {
-                self.getAemetXML(beachCode: (self.beach?.webCode)!)
-                DispatchQueue.main.sync {
-                    self.prediction = Weather.addWeatherPrediction(context: self.managedObjectContext!, beach: self.beach!, beachData: self.beachXML!)
-                    self.setBeachUIData(forToday: self.showToday!)
-
-                }
-            }
-        } else {
-            print(prediction?[0])
-            if prediction?.count == 1 { tomorrowButton.isEnabled = false }
-            setBeachUIData(forToday: showToday!)
-        }
+        getPrediction()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -92,6 +83,19 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    private func getPrediction() {
+        prediction = Weather.getPrediction(context: managedObjectContext!, beach: beach!)
+        if prediction?.count == 1 { tomorrowButton.isEnabled = false }
+        if prediction == nil && isInternetAvailable(){
+            DispatchQueue.global(qos: .background).async {
+                self.getAemetXML(beachCode: (self.beach?.webCode)!)
+                DispatchQueue.main.async {
+                    self.prediction = Weather.addWeatherPrediction(context: self.managedObjectContext!, beach: self.beach!, beachData: self.beachXML!)
+                }
+            }
+        }
     }
     
     private func prepareView() {
@@ -133,29 +137,25 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
             showPrediction = self.prediction?[1]
             isMorning = true
         }
-        if let checkedPrediction = showPrediction {
-            if isMorning {
-                self.weatherIcon.image = getStateImage(withCode: Int(checkedPrediction.skyState1))
-                self.windData?.text = getWindString(withCode: Int(checkedPrediction.wind1))
-                self.swellData?.text = getSwellString(withCode: Int(checkedPrediction.swell1))
-
-            } else {
-                self.weatherIcon.image = getStateImage(withCode: Int(checkedPrediction.skyState2))
-                self.windData?.text = getWindString(withCode: Int(checkedPrediction.wind2))
-                self.swellData?.text = getSwellString(withCode: Int(checkedPrediction.swell2))
-            }
-            self.temperetureLabel?.text = "\(checkedPrediction.maxTemp)º"
-            self.uvData?.text = "\(checkedPrediction.maxUV)"
-            self.waterTempData?.text = "\(checkedPrediction.waterTemp)º"
-            self.thermalSensData?.text = getTermSensationString(withCode:  Int(checkedPrediction.termSensation))
+        if isMorning {
+            self.weatherIcon.image = getStateImage(withCode: Int(showPrediction?.skyState1 ?? -1))
+            self.windData?.text = getWindString(withCode: Int(showPrediction?.wind1 ?? -1))
+            self.swellData?.text = getSwellString(withCode: Int(showPrediction?.swell1 ?? -1))
+            
+        } else {
+            self.weatherIcon.image = getStateImage(withCode: Int(showPrediction?.skyState2 ?? -1))
+            self.windData?.text = getWindString(withCode: Int(showPrediction?.wind2 ?? -1))
+            self.swellData?.text = getSwellString(withCode: Int(showPrediction?.swell2 ?? -1))
+        }
+        self.thermalSensData?.text = getTermSensationString(withCode:  Int(showPrediction?.termSensation ?? -1))
+        if let showPrediction = showPrediction {
+            self.temperetureLabel?.text = "\(showPrediction.maxTemp)º"
+            self.uvData?.text = "\(showPrediction.maxUV)"
+            self.waterTempData?.text = "\(showPrediction.waterTemp)º"
         } else {
             self.temperetureLabel?.text = "--º"
-            self.weatherIcon.image = #imageLiteral(resourceName: "error")
-            self.windData?.text = getWindString(withCode: -1)
-            self.swellData?.text = getSwellString(withCode: -1)
-            self.uvData?.text = "-"
+            self.uvData?.text = "--"
             self.waterTempData?.text = "--º"
-            self.thermalSensData?.text = getTermSensationString(withCode: -1)
         }
     }
     
@@ -182,21 +182,21 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
     }
     
     private func updateBeach() {
-        managedObjectContext?.perform {
-            let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
-            fetchRequest.predicate = NSPredicate(format: "webCode == %@", (self.beach?.webCode)!)
-            do {
-                let beachCD = try self.managedObjectContext?.fetch(fetchRequest)
-                beachCD?[0].setValue(self.beach!.fav, forKey: "fav")
-                try self.managedObjectContext?.save()
+        
+        let fetchRequest = NSFetchRequest<Beach>(entityName: "Beach")
+        fetchRequest.predicate = NSPredicate(format: "webCode == %@", (self.beach?.webCode)!)
+        
+        do {
+            let beachCD = try self.managedObjectContext?.fetch(fetchRequest)
+            beachCD?[0].setValue(self.beach!.fav, forKey: "fav")
+            try self.managedObjectContext?.save()
                 
-            } catch let error{
-                print("Error updating beaches: \(error)")
-            }
+        } catch let error{
+            print("Error updating beaches: \(error)")
         }
-    }
+}
 
-    
+
     private func getAemetXML(beachCode: String) {
         beachXML = BeachXMLModel(with: beachCode)
         beachXML?.parser()

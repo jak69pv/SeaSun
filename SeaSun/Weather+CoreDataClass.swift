@@ -81,10 +81,11 @@ public class Weather: NSManagedObject {
             calendar.component(.year, from: elaboratedDate) == todayYear{
             print("hay prediccion")
             return weatherPrediction
-        } else if isInternetAvailable() &&
+        } else if !isInternetAvailable() &&
             calendar.component(.day, from: elaboratedDate) == yesterday,
             calendar.component(.month, from: elaboratedDate) == yesterdayMonth,
             calendar.component(.year, from: elaboratedDate) == yesterdayYear{
+            print("hay prediccion de ayer")
             return [weatherPrediction[1]]
         }
         
@@ -94,6 +95,8 @@ public class Weather: NSManagedObject {
     static func addWeatherPrediction(context: NSManagedObjectContext, beach: Beach, beachData: BeachXMLModel) -> [Weather]? {
         
         var weathers: [Weather]?
+        
+        print("entro")
         
         //Borramos las predicciones anteriores
         let fetchRequest = NSFetchRequest<Weather>(entityName: "Weather")
@@ -137,7 +140,9 @@ public class Weather: NSManagedObject {
                             beach: beach,
                             context: context)
             
-            weathers?.append(weather)
+            if weathers?.append(weather) == nil {
+                weathers = [weather]
+            }
         }
         
         return weathers

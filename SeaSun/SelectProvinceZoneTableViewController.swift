@@ -100,6 +100,7 @@ extension SelectProvinceZoneTableViewController{
                 // Inject it into favVC
                 provinceVC.fetchedResultsController = fc
                 provinceVC.pZoneTitle = (pZone.province)! + " " + (pZone.pZone)!
+                provinceVC.title = (pZone.province)! + " " + (pZone.pZone)!
                 
             }
         default:

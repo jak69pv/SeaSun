@@ -57,6 +57,7 @@ class FavouriteBeachesTableViewController: CoreDataTableViewController {
         // Inicializamos el view cotroller de este storyboard y pasamos las variables
         let nextView: DetailBeachViewController = storyboard?.instantiateViewController(withIdentifier: "DetailBeachViewController") as! DetailBeachViewController
         nextView.beach = beach
+        nextView.managedObjectContext = self.fetchedResultsController?.managedObjectContext
         
         // Inicializamos el view controller y le pasamos el VC
         self.navigationController?.pushViewController(nextView, animated: true)
