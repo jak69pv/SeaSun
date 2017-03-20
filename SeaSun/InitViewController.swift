@@ -171,8 +171,8 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.beachBigZoneTableView.separatorInset.right = 0
         self.beachBigZoneTableView.backgroundColor = UIColor.seaSunBlue
         // Mostrar solo las celdas que se ven
-        let footerView = UIView()
-        self.beachBigZoneTableView.tableFooterView = footerView
+        //let footerView = UIView()
+        //self.beachBigZoneTableView.tableFooterView = UIView.init(frame: CGRect.zero)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -198,6 +198,10 @@ class InitViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         performSegue(withIdentifier: Segues.initToRegion, sender: itemsRow[indexPath.row])
 
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return self.beachBigZoneTableView.frame.size.height / 3
     }
     
     private func getZones(_ bigZone: String) -> ([Zone]?/*, [String]?, [[String]]?*/) {
