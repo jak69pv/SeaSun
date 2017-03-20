@@ -189,7 +189,6 @@ class DetailBeachViewController: UIViewController, UITabBarDelegate {
         do {
             let beachCD = try self.managedObjectContext?.fetch(fetchRequest)
             beachCD?[0].setValue(self.beach!.fav, forKey: "fav")
-            try self.managedObjectContext?.save()
                 
         } catch let error{
             print("Error updating beaches: \(error)")
